@@ -84,7 +84,7 @@ fun LiveRoomScreen(
             }
     ) {
         Text(
-            text = "����Դ: ${state.streamUrl.ifBlank { "������..." }}",
+            text = "播放源: ${state.streamUrl.ifBlank { "加载中..." }}",
             color = Color.White,
             modifier = Modifier
                 .align(Alignment.Center)
@@ -134,9 +134,9 @@ private fun ControlsOverlay(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("�� ��һƵ��  �� ��һƵ��", color = Color.White)
-            Text("�� ��ע�б�  �� ����", color = Color.White)
-            Text("��Ļ: ${if (danmakuEnabled) "��" else "��"}", color = Color.White)
+            Text("↑ 上一频道  ↓ 下一频道", color = Color.White)
+            Text("← 关注列表  → 设置", color = Color.White)
+            Text("弹幕: ${if (danmakuEnabled) "开" else "关"}", color = Color.White)
         }
     }
 }

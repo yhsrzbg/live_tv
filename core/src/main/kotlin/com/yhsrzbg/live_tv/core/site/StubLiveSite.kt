@@ -24,10 +24,10 @@ abstract class StubLiveSite(
         return listOf(
             LiveCategory(
                 id = "1",
-                name = "$name ����",
+                name = "$name 热门",
                 children = listOf(
-                    LiveSubCategory(id = "11", parentId = "1", name = "�Ƽ�"),
-                    LiveSubCategory(id = "12", parentId = "1", name = "��Ϸ")
+                    LiveSubCategory(id = "11", parentId = "1", name = "推荐"),
+                    LiveSubCategory(id = "12", parentId = "1", name = "游戏")
                 )
             )
         )
@@ -70,9 +70,9 @@ abstract class StubLiveSite(
     override suspend fun roomDetail(roomId: String): LiveRoomDetail {
         return LiveRoomDetail(
             roomId = roomId,
-            title = "$name ֱ���� $roomId",
+            title = "$name 直播间 $roomId",
             cover = "",
-            userName = "$name ����",
+            userName = "$name 主播",
             userAvatar = "",
             online = 1024,
             status = true,
@@ -82,9 +82,9 @@ abstract class StubLiveSite(
 
     override suspend fun playQualities(detail: LiveRoomDetail): List<LivePlayQuality> {
         return listOf(
-            LivePlayQuality("����", "uhd"),
-            LivePlayQuality("����", "hd"),
-            LivePlayQuality("����", "sd"),
+            LivePlayQuality("超清", "uhd"),
+            LivePlayQuality("高清", "hd"),
+            LivePlayQuality("流畅", "sd"),
         )
     }
 
@@ -102,9 +102,9 @@ abstract class StubLiveSite(
             val seq = ((page - 1) * 20) + it
             LiveRoomItem(
                 roomId = "$id-$seq",
-                title = "$name ���� $seq",
+                title = "$name 房间 $seq",
                 cover = "",
-                userName = "$name ����$seq",
+                userName = "$name 主播$seq",
                 online = 1000 + seq,
             )
         }

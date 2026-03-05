@@ -49,9 +49,9 @@ fun HomeScreen(
         Text("Live TV", style = MaterialTheme.typography.headlineMedium, color = Color.White)
         sites.forEach { siteId ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ActionButton(text = "$siteId ����") { onOpenHot(siteId) }
-                ActionButton(text = "$siteId ����") { onOpenCategory(siteId) }
-                ActionButton(text = "$siteId ����") { onOpenSearch(siteId) }
+                ActionButton(text = "$siteId 热门") { onOpenHot(siteId) }
+                ActionButton(text = "$siteId 分类") { onOpenCategory(siteId) }
+                ActionButton(text = "$siteId 搜索") { onOpenSearch(siteId) }
             }
         }
     }
@@ -64,7 +64,7 @@ fun HotScreen(
     onOpenRoom: (String) -> Unit,
     onBack: () -> Unit,
 ) {
-    RoomListScreen(title = "$siteId ����ֱ��", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
+    RoomListScreen(title = "$siteId 热门直播", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
 }
 
 @Composable
@@ -74,7 +74,7 @@ fun CategoryScreen(
     onOpenRoom: (String) -> Unit,
     onBack: () -> Unit,
 ) {
-    RoomListScreen(title = "$siteId ֱ������", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
+    RoomListScreen(title = "$siteId 直播分类", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
 }
 
 @Composable
@@ -95,18 +95,18 @@ fun SearchScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ActionButton(text = "����", onClick = onBack)
-            Text("$siteId ����", color = Color.White, style = MaterialTheme.typography.headlineSmall)
+            ActionButton(text = "返回", onClick = onBack)
+            Text("$siteId 搜索", color = Color.White, style = MaterialTheme.typography.headlineSmall)
         }
 
         OutlinedTextField(
             value = keyword,
             onValueChange = { keyword = it },
-            label = { Text("�ؼ���") },
+            label = { Text("关键词") },
             modifier = Modifier.fillMaxWidth(),
         )
 
-        ActionButton(text = "��ʼ����") {
+        ActionButton(text = "开始搜索") {
             result.clear()
             result.addAll(search(keyword))
         }
@@ -141,7 +141,7 @@ private fun RoomListScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            ActionButton(text = "����", onClick = onBack)
+            ActionButton(text = "返回", onClick = onBack)
             Text(title, color = Color.White, style = MaterialTheme.typography.headlineSmall)
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -169,7 +169,7 @@ private fun RoomCard(item: LiveRoomItem, onOpenRoom: (String) -> Unit) {
             Box(modifier = Modifier.size(88.dp, 50.dp).background(Color(0xFF263238)))
             Column {
                 Text(item.title, style = MaterialTheme.typography.titleMedium)
-                Text("${item.userName} �� ���� ${item.online}", style = MaterialTheme.typography.bodyMedium)
+                Text("${item.userName} · 在线 ${item.online}", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
