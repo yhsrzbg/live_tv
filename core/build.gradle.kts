@@ -7,6 +7,7 @@ plugins {
 android {
     namespace = "com.yhsrzbg.live_tv.core"
     compileSdk = 35
+    buildToolsVersion = "36.1.0"
 
     defaultConfig {
         minSdk = 30

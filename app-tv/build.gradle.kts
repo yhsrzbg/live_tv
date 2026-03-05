@@ -10,6 +10,7 @@ plugins {
 android {
     namespace = "com.yhsrzbg.live_tv"
     compileSdk = 35
+    buildToolsVersion = "36.1.0"
 
     defaultConfig {
         applicationId = "com.yhsrzbg.live_tv"

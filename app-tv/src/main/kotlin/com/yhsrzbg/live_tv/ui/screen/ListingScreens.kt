@@ -25,12 +25,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.yhsrzbg.live_tv.core.model.LiveRoomItem
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -49,9 +51,9 @@ fun HomeScreen(
         Text("Live TV", style = MaterialTheme.typography.headlineMedium, color = Color.White)
         sites.forEach { siteId ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ActionButton(text = "$siteId 热门") { onOpenHot(siteId) }
-                ActionButton(text = "$siteId 分类") { onOpenCategory(siteId) }
-                ActionButton(text = "$siteId 搜索") { onOpenSearch(siteId) }
+                ActionButton(text = "$siteId Hot") { onOpenHot(siteId) }
+                ActionButton(text = "$siteId Category") { onOpenCategory(siteId) }
+                ActionButton(text = "$siteId Search") { onOpenSearch(siteId) }
             }
         }
     }
@@ -64,7 +66,7 @@ fun HotScreen(
     onOpenRoom: (String) -> Unit,
     onBack: () -> Unit,
 ) {
-    RoomListScreen(title = "$siteId 热门直播", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
+    RoomListScreen(title = "$siteId Hot Live", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
 }
 
 @Composable
@@ -74,7 +76,7 @@ fun CategoryScreen(
     onOpenRoom: (String) -> Unit,
     onBack: () -> Unit,
 ) {
-    RoomListScreen(title = "$siteId 直播分类", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
+    RoomListScreen(title = "$siteId Category", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
 }
 
 @Composable
@@ -86,6 +88,7 @@ fun SearchScreen(
 ) {
     var keyword by remember { mutableStateOf("") }
     val result = remember { mutableStateListOf<LiveRoomItem>() }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -95,20 +98,22 @@ fun SearchScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ActionButton(text = "返回", onClick = onBack)
-            Text("$siteId 搜索", color = Color.White, style = MaterialTheme.typography.headlineSmall)
+            ActionButton(text = "Back", onClick = onBack)
+            Text("$siteId Search", color = Color.White, style = MaterialTheme.typography.headlineSmall)
         }
 
         OutlinedTextField(
             value = keyword,
             onValueChange = { keyword = it },
-            label = { Text("关键词") },
+            label = { Text("Keyword") },
             modifier = Modifier.fillMaxWidth(),
         )
 
-        ActionButton(text = "开始搜索") {
-            result.clear()
-            result.addAll(search(keyword))
+        ActionButton(text = "Search") {
+            scope.launch {
+                result.clear()
+                result.addAll(search(keyword))
+            }
         }
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -141,7 +146,7 @@ private fun RoomListScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            ActionButton(text = "返回", onClick = onBack)
+            ActionButton(text = "Back", onClick = onBack)
             Text(title, color = Color.White, style = MaterialTheme.typography.headlineSmall)
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -169,7 +174,7 @@ private fun RoomCard(item: LiveRoomItem, onOpenRoom: (String) -> Unit) {
             Box(modifier = Modifier.size(88.dp, 50.dp).background(Color(0xFF263238)))
             Column {
                 Text(item.title, style = MaterialTheme.typography.titleMedium)
-                Text("${item.userName} · 在线 ${item.online}", style = MaterialTheme.typography.bodyMedium)
+                Text("${item.userName} �� Online ${item.online}", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

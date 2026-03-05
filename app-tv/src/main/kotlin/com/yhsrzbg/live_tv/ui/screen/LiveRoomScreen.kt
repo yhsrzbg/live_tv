@@ -17,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.unit.dp
 import com.yhsrzbg.live_tv.data.settings.SettingsStore
@@ -53,7 +52,7 @@ fun LiveRoomScreen(
             .fillMaxSize()
             .background(Color.Black)
             .onPreviewKeyEvent { event ->
-                if (event.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
+                if (event.nativeKeyEvent.action != KeyEvent.ACTION_DOWN) return@onPreviewKeyEvent false
                 when (RemoteKeyMapper.map(event.nativeKeyEvent.keyCode)) {
                     RemoteIntent.ToggleControls -> {
                         onToggleControls(); true
@@ -84,7 +83,7 @@ fun LiveRoomScreen(
             }
     ) {
         Text(
-            text = "播放源: ${state.streamUrl.ifBlank { "加载中..." }}",
+            text = "Stream: ${state.streamUrl.ifBlank { "Loading..." }}",
             color = Color.White,
             modifier = Modifier
                 .align(Alignment.Center)
@@ -134,9 +133,9 @@ private fun ControlsOverlay(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("↑ 上一频道  ↓ 下一频道", color = Color.White)
-            Text("← 关注列表  → 设置", color = Color.White)
-            Text("弹幕: ${if (danmakuEnabled) "开" else "关"}", color = Color.White)
+            Text("UP Prev Channel  DOWN Next Channel", color = Color.White)
+            Text("LEFT Follow List  RIGHT Settings", color = Color.White)
+            Text("Danmaku: ${if (danmakuEnabled) "ON" else "OFF"}", color = Color.White)
         }
     }
 }
