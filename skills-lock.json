@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "android-jetpack-compose-expert": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "d66dff5f9bfad68a2c4f9782e21593715c8019266cec14544ab2c2b8ab4f83e8"
+    }
+  }
+}
