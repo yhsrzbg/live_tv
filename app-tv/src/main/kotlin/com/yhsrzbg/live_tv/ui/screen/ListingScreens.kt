@@ -49,9 +49,9 @@ fun HomeScreen(
         Text("Live TV", style = MaterialTheme.typography.headlineMedium, color = Color.White)
         sites.forEach { siteId ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ActionButton(text = "$siteId ÈÈÃÅ") { onOpenHot(siteId) }
-                ActionButton(text = "$siteId ·ÖÀà") { onOpenCategory(siteId) }
-                ActionButton(text = "$siteId ËÑË÷") { onOpenSearch(siteId) }
+                ActionButton(text = "$siteId ï¿½ï¿½ï¿½ï¿½") { onOpenHot(siteId) }
+                ActionButton(text = "$siteId ï¿½ï¿½ï¿½ï¿½") { onOpenCategory(siteId) }
+                ActionButton(text = "$siteId ï¿½ï¿½ï¿½ï¿½") { onOpenSearch(siteId) }
             }
         }
     }
@@ -64,7 +64,7 @@ fun HotScreen(
     onOpenRoom: (String) -> Unit,
     onBack: () -> Unit,
 ) {
-    RoomListScreen(title = "$siteId ÈÈÃÅÖ±²¥", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
+    RoomListScreen(title = "$siteId ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
 }
 
 @Composable
@@ -74,7 +74,7 @@ fun CategoryScreen(
     onOpenRoom: (String) -> Unit,
     onBack: () -> Unit,
 ) {
-    RoomListScreen(title = "$siteId Ö±²¥·ÖÀà", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
+    RoomListScreen(title = "$siteId Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", load = load, onOpenRoom = onOpenRoom, onBack = onBack)
 }
 
 @Composable
@@ -95,18 +95,18 @@ fun SearchScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ActionButton(text = "·µ»Ø", onClick = onBack)
-            Text("$siteId ËÑË÷", color = Color.White, style = MaterialTheme.typography.headlineSmall)
+            ActionButton(text = "ï¿½ï¿½ï¿½ï¿½", onClick = onBack)
+            Text("$siteId ï¿½ï¿½ï¿½ï¿½", color = Color.White, style = MaterialTheme.typography.headlineSmall)
         }
 
         OutlinedTextField(
             value = keyword,
             onValueChange = { keyword = it },
-            label = { Text("¹Ø¼ü´Ê") },
+            label = { Text("ï¿½Ø¼ï¿½ï¿½ï¿½") },
             modifier = Modifier.fillMaxWidth(),
         )
 
-        ActionButton(text = "¿ªÊ¼ËÑË÷") {
+        ActionButton(text = "ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½") {
             result.clear()
             result.addAll(search(keyword))
         }
@@ -141,7 +141,7 @@ private fun RoomListScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            ActionButton(text = "·µ»Ø", onClick = onBack)
+            ActionButton(text = "ï¿½ï¿½ï¿½ï¿½", onClick = onBack)
             Text(title, color = Color.White, style = MaterialTheme.typography.headlineSmall)
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -169,7 +169,7 @@ private fun RoomCard(item: LiveRoomItem, onOpenRoom: (String) -> Unit) {
             Box(modifier = Modifier.size(88.dp, 50.dp).background(Color(0xFF263238)))
             Column {
                 Text(item.title, style = MaterialTheme.typography.titleMedium)
-                Text("${item.userName} ¡¤ ÔÚÏß ${item.online}", style = MaterialTheme.typography.bodyMedium)
+                Text("${item.userName} ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ${item.online}", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

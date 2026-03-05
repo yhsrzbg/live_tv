@@ -1,6 +1,6 @@
 package com.yhsrzbg.live_tv.core.site
 
-class BilibiliSite : StubLiveSite(id = "bilibili", name = "ßÙÁ¨ßÙÁ¨")
-class DouyuSite : StubLiveSite(id = "douyu", name = "¶·Óã")
-class HuyaSite : StubLiveSite(id = "huya", name = "»¢ÑÀ")
-class DouyinSite : StubLiveSite(id = "douyin", name = "¶¶Òô")
+class BilibiliSite : StubLiveSite(id = "bilibili", name = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")
+class DouyuSite : StubLiveSite(id = "douyu", name = "ï¿½ï¿½ï¿½ï¿½")
+class HuyaSite : StubLiveSite(id = "huya", name = "ï¿½ï¿½ï¿½ï¿½")
+class DouyinSite : StubLiveSite(id = "douyin", name = "ï¿½ï¿½ï¿½ï¿½")

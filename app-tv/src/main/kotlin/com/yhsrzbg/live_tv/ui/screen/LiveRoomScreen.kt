@@ -84,7 +84,7 @@ fun LiveRoomScreen(
             }
     ) {
         Text(
-            text = "²¥·ÅÔ´: ${state.streamUrl.ifBlank { "¼ÓÔØÖÐ..." }}",
+            text = "ï¿½ï¿½ï¿½ï¿½Ô´: ${state.streamUrl.ifBlank { "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½..." }}",
             color = Color.White,
             modifier = Modifier
                 .align(Alignment.Center)
@@ -134,9 +134,9 @@ private fun ControlsOverlay(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("¡ü ÉÏÒ»ÆµµÀ  ¡ý ÏÂÒ»ÆµµÀ", color = Color.White)
-            Text("¡û ¹Ø×¢ÁÐ±í  ¡ú ÉèÖÃ", color = Color.White)
-            Text("µ¯Ä»: ${if (danmakuEnabled) "¿ª" else "¹Ø"}", color = Color.White)
+            Text("ï¿½ï¿½ ï¿½ï¿½Ò»Æµï¿½ï¿½  ï¿½ï¿½ ï¿½ï¿½Ò»Æµï¿½ï¿½", color = Color.White)
+            Text("ï¿½ï¿½ ï¿½ï¿½×¢ï¿½Ð±ï¿½  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½", color = Color.White)
+            Text("ï¿½ï¿½Ä»: ${if (danmakuEnabled) "ï¿½ï¿½" else "ï¿½ï¿½"}", color = Color.White)
         }
     }
 }

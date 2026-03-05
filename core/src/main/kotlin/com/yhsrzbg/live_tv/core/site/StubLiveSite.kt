@@ -24,10 +24,10 @@ abstract class StubLiveSite(
         return listOf(
             LiveCategory(
                 id = "1",
-                name = "$name ÈÈÃÅ",
+                name = "$name ï¿½ï¿½ï¿½ï¿½",
                 children = listOf(
-                    LiveSubCategory(id = "11", parentId = "1", name = "ÍÆ¼ö"),
-                    LiveSubCategory(id = "12", parentId = "1", name = "ÓÎÏ·")
+                    LiveSubCategory(id = "11", parentId = "1", name = "ï¿½Æ¼ï¿½"),
+                    LiveSubCategory(id = "12", parentId = "1", name = "ï¿½ï¿½Ï·")
                 )
             )
         )
@@ -70,9 +70,9 @@ abstract class StubLiveSite(
     override suspend fun roomDetail(roomId: String): LiveRoomDetail {
         return LiveRoomDetail(
             roomId = roomId,
-            title = "$name Ö±²¥¼ä $roomId",
+            title = "$name Ö±ï¿½ï¿½ï¿½ï¿½ $roomId",
             cover = "",
-            userName = "$name Ö÷²¥",
+            userName = "$name ï¿½ï¿½ï¿½ï¿½",
             userAvatar = "",
             online = 1024,
             status = true,
@@ -82,9 +82,9 @@ abstract class StubLiveSite(
 
     override suspend fun playQualities(detail: LiveRoomDetail): List<LivePlayQuality> {
         return listOf(
-            LivePlayQuality("³¬Çå", "uhd"),
-            LivePlayQuality("¸ßÇå", "hd"),
-            LivePlayQuality("Á÷³©", "sd"),
+            LivePlayQuality("ï¿½ï¿½ï¿½ï¿½", "uhd"),
+            LivePlayQuality("ï¿½ï¿½ï¿½ï¿½", "hd"),
+            LivePlayQuality("ï¿½ï¿½ï¿½ï¿½", "sd"),
         )
     }
 
@@ -102,9 +102,9 @@ abstract class StubLiveSite(
             val seq = ((page - 1) * 20) + it
             LiveRoomItem(
                 roomId = "$id-$seq",
-                title = "$name ·¿¼ä $seq",
+                title = "$name ï¿½ï¿½ï¿½ï¿½ $seq",
                 cover = "",
-                userName = "$name Ö÷²¥$seq",
+                userName = "$name ï¿½ï¿½ï¿½ï¿½$seq",
                 online = 1000 + seq,
             )
         }
