@@ -1,6 +1,8 @@
 package com.yhsrzbg.live_tv.input
 
 import android.view.KeyEvent
+import com.yhsrzbg.live_tv.ui.createLiveRoomCallbacks
+import com.yhsrzbg.live_tv.ui.navigation.Route
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -18,5 +20,44 @@ class RemoteKeyMapperTest {
         assertEquals(RemoteIntent.NextChannel, RemoteKeyMapper.map(KeyEvent.KEYCODE_DPAD_DOWN))
         assertEquals(RemoteIntent.OpenFollowList, RemoteKeyMapper.map(KeyEvent.KEYCODE_DPAD_LEFT))
         assertEquals(RemoteIntent.OpenSettings, RemoteKeyMapper.map(KeyEvent.KEYCODE_DPAD_RIGHT))
+    }
+
+    @Test
+    fun openFollowIntent_navigatesToFollowRoute() {
+        var target: String? = null
+        val callbacks = createLiveRoomCallbacks(
+            navigate = { target = it },
+            switchChannel = {},
+        )
+
+        callbacks.onShowFollow()
+
+        assertEquals(Route.Follow.value, target)
+    }
+
+    @Test
+    fun prevChannelIntent_callsSwitchChannelWithMinusOne() {
+        var direction: Int? = null
+        val callbacks = createLiveRoomCallbacks(
+            navigate = {},
+            switchChannel = { direction = it },
+        )
+
+        callbacks.onPrevChannel()
+
+        assertEquals(-1, direction)
+    }
+
+    @Test
+    fun nextChannelIntent_callsSwitchChannelWithPlusOne() {
+        var direction: Int? = null
+        val callbacks = createLiveRoomCallbacks(
+            navigate = {},
+            switchChannel = { direction = it },
+        )
+
+        callbacks.onNextChannel()
+
+        assertEquals(1, direction)
     }
 }

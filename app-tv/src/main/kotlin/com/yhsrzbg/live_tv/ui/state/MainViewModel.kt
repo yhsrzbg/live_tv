@@ -56,6 +56,7 @@ data class HistoryUiState(
 class MainViewModel(
     private val repository: LiveRepository,
 ) : ViewModel() {
+    private var channelCursor: Int = -1
 
     private val _homeState = MutableStateFlow(HomeUiState())
     val homeState: StateFlow<HomeUiState> = _homeState.asStateFlow()
@@ -198,5 +199,23 @@ class MainViewModel(
             repository.clearHistory()
             refreshHistory()
         }
+    }
+
+    fun switchChannel(direction: Int) {
+        if (direction == 0) return
+        val channels = buildList {
+            _historyState.value.items.forEach { add(it.siteId to it.roomId) }
+            _followState.value.items.forEach { add(it.siteId to it.roomId) }
+        }.distinct()
+        if (channels.isEmpty()) return
+
+        channelCursor = if (channelCursor < 0) {
+            0
+        } else {
+            val size = channels.size
+            (((channelCursor + direction) % size) + size) % size
+        }
+        val (siteId, roomId) = channels[channelCursor]
+        loadRoom(siteId, roomId)
     }
 }

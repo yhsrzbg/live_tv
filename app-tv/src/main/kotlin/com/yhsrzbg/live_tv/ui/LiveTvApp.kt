@@ -28,6 +28,25 @@ import com.yhsrzbg.live_tv.ui.navigation.Route
 import com.yhsrzbg.live_tv.ui.screen.LiveRoomScreen
 import com.yhsrzbg.live_tv.ui.state.MainViewModel
 
+data class LiveRoomCallbacks(
+    val onShowSettings: () -> Unit,
+    val onShowFollow: () -> Unit,
+    val onPrevChannel: () -> Unit,
+    val onNextChannel: () -> Unit,
+)
+
+fun createLiveRoomCallbacks(
+    navigate: (String) -> Unit,
+    switchChannel: (Int) -> Unit,
+): LiveRoomCallbacks {
+    return LiveRoomCallbacks(
+        onShowSettings = { navigate(Route.Settings.value) },
+        onShowFollow = { navigate(Route.Follow.value) },
+        onPrevChannel = { switchChannel(-1) },
+        onNextChannel = { switchChannel(+1) },
+    )
+}
+
 @Composable
 fun LiveTvApp(
     repository: LiveRepository,
@@ -129,6 +148,10 @@ fun LiveTvApp(
         ) { backStack ->
             val siteId = backStack.arguments?.getString("siteId").orEmpty()
             val roomId = backStack.arguments?.getString("roomId").orEmpty()
+            val roomCallbacks = createLiveRoomCallbacks(
+                navigate = { route -> navController.navigate(route) },
+                switchChannel = vm::switchChannel,
+            )
             LaunchedEffect(siteId, roomId) {
                 vm.loadRoom(siteId, roomId)
             }
@@ -138,10 +161,10 @@ fun LiveTvApp(
                 state = room,
                 settingsStore = settingsStore,
                 onToggleControls = vm::toggleControls,
-                onShowSettings = { vm.setControls(true) },
-                onShowFollow = { vm.followCurrent(siteId, roomId) },
-                onPrevChannel = {},
-                onNextChannel = {},
+                onShowSettings = roomCallbacks.onShowSettings,
+                onShowFollow = roomCallbacks.onShowFollow,
+                onPrevChannel = roomCallbacks.onPrevChannel,
+                onNextChannel = roomCallbacks.onNextChannel,
                 onBack = { navController.popBackStack() },
             )
         }
