@@ -15,5 +15,9 @@ class SiteRegistry private constructor(
             val all = defaultSites()
             return SiteRegistry(all.associateBy { it.id })
         }
+
+        fun fromSites(sites: List<LiveSite>): SiteRegistry {
+            return SiteRegistry(sites.associateBy { it.id })
+        }
     }
 }

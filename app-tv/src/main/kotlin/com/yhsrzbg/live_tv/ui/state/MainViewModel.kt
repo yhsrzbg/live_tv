@@ -41,6 +41,19 @@ class MainViewModel(
 
     suspend fun hot(siteId: String): List<LiveRoomItem> = repository.hotRooms(siteId).items
 
+    suspend fun defaultCategoryRooms(siteId: String): List<LiveRoomItem> {
+        val firstSub = repository.categories(siteId)
+            .firstOrNull()
+            ?.children
+            ?.firstOrNull()
+            ?: return emptyList()
+
+        return repository.categoryRooms(siteId, firstSub.id, firstSub.parentId).items
+    }
+
+    suspend fun categoryRooms(siteId: String, categoryId: String, parentId: String): List<LiveRoomItem> =
+        repository.categoryRooms(siteId, categoryId, parentId).items
+
     suspend fun search(siteId: String, keyword: String): List<LiveRoomItem> = repository.search(siteId, keyword)
 
     fun loadRoom(siteId: String, roomId: String) {

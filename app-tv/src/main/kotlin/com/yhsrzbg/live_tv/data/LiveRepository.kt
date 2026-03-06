@@ -34,6 +34,9 @@ class LiveRepository(
 
     suspend fun categories(siteId: String) = site(siteId).categories()
 
+    suspend fun categoryRooms(siteId: String, categoryId: String, parentId: String, page: Int = 1): LiveCategoryResult =
+        site(siteId).categoryRooms(categoryId, parentId, page)
+
     fun follows(): Flow<List<FollowEntity>> = database.followDao().observeAll()
 
     suspend fun upsertFollow(item: FollowEntity) = database.followDao().upsert(item)

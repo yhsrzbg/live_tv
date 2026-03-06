@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.yhsrzbg.live_tv.data.LiveRepository
 import com.yhsrzbg.live_tv.data.settings.SettingsStore
+import com.yhsrzbg.live_tv.ui.feature.category.CategoryDetailScreen
 import com.yhsrzbg.live_tv.ui.feature.category.CategoryScreen
 import com.yhsrzbg.live_tv.ui.feature.follow.FollowScreen
 import com.yhsrzbg.live_tv.ui.feature.history.HistoryScreen
@@ -62,9 +63,29 @@ fun LiveTvApp(
             val siteId = backStack.arguments?.getString("siteId").orEmpty()
             CategoryScreen(
                 siteId = siteId,
-                load = { vm.hot(siteId) },
+                load = { vm.defaultCategoryRooms(siteId) },
                 onOpenRoom = { roomId -> navController.navigate(Route.room(siteId, roomId)) },
                 onBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            Route.CategoryDetail.value,
+            arguments = listOf(
+                navArgument("siteId") { type = NavType.StringType },
+                navArgument("categoryId") { type = NavType.StringType },
+                navArgument("parentId") { type = NavType.StringType },
+            ),
+        ) { backStack ->
+            val siteId = backStack.arguments?.getString("siteId").orEmpty()
+            val categoryId = backStack.arguments?.getString("categoryId").orEmpty()
+            val parentId = backStack.arguments?.getString("parentId").orEmpty()
+            CategoryDetailScreen(
+                siteId = siteId,
+                categoryId = categoryId,
+                parentId = parentId,
+                load = { vm.categoryRooms(siteId, categoryId, parentId) },
+                onOpenRoom = { roomId -> navController.navigate(Route.room(siteId, roomId)) },
+                onBack = { navController.popBackStack() },
             )
         }
         composable(
