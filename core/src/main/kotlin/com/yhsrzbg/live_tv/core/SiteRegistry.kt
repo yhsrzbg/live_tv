@@ -1,10 +1,7 @@
-package com.yhsrzbg.live_tv.core
+﻿package com.yhsrzbg.live_tv.core
 
 import com.yhsrzbg.live_tv.core.api.LiveSite
-import com.yhsrzbg.live_tv.core.site.BilibiliSite
-import com.yhsrzbg.live_tv.core.site.DouyinSite
-import com.yhsrzbg.live_tv.core.site.DouyuSite
-import com.yhsrzbg.live_tv.core.site.HuyaSite
+import com.yhsrzbg.live_tv.core.site.defaultSites
 
 class SiteRegistry private constructor(
     private val sites: Map<String, LiveSite>,
@@ -15,13 +12,12 @@ class SiteRegistry private constructor(
 
     companion object {
         fun default(): SiteRegistry {
-            val all = listOf(
-                BilibiliSite(),
-                DouyuSite(),
-                HuyaSite(),
-                DouyinSite(),
-            )
+            val all = defaultSites()
             return SiteRegistry(all.associateBy { it.id })
+        }
+
+        fun fromSites(sites: List<LiveSite>): SiteRegistry {
+            return SiteRegistry(sites.associateBy { it.id })
         }
     }
 }

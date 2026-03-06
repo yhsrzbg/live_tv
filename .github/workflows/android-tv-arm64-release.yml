@@ -1,4 +1,4 @@
-name: android-tv-arm64-release
+name: android-tv-arm-release
 
 on:
   push:
@@ -38,10 +38,12 @@ jobs:
           EOF
 
       - name: Build
-        run: ./gradlew :app-tv:lint :app-tv:testDebugUnitTest :app-tv:assembleRelease
+        run: ./gradlew :core:test :app-tv:lint :app-tv:testDebugUnitTest :app-tv:assembleRelease
 
-      - name: Upload arm64-v8a APK
+      - name: Upload arm APKs (v8a + v7a)
         uses: actions/upload-artifact@v4
         with:
-          name: live-tv-arm64-v8a-release
-          path: app-tv/build/outputs/apk/release/app-tv-arm64-v8a-release.apk
+          name: live-tv-arm-release
+          path: |
+            app-tv/build/outputs/apk/release/app-tv-arm64-v8a-release.apk
+            app-tv/build/outputs/apk/release/app-tv-armeabi-v7a-release.apk

@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.yhsrzbg.live_tv.core.model.LivePlayQuality
 import com.yhsrzbg.live_tv.core.model.LiveRoomDetail
 import com.yhsrzbg.live_tv.core.model.LiveRoomItem
+import com.yhsrzbg.live_tv.core.model.LiveSubCategory
+import com.yhsrzbg.live_tv.core.model.LiveAnchorItem
 import com.yhsrzbg.live_tv.data.LiveRepository
 import com.yhsrzbg.live_tv.data.db.FollowEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,9 +28,36 @@ data class RoomUiState(
     val showControls: Boolean = false,
 )
 
+data class FollowItemUiState(
+    val id: String,
+    val siteId: String,
+    val roomId: String,
+    val userName: String,
+    val face: String,
+    val addTime: Long,
+)
+
+data class FollowUiState(
+    val items: List<FollowItemUiState> = emptyList(),
+)
+
+data class HistoryItemUiState(
+    val id: String,
+    val siteId: String,
+    val roomId: String,
+    val userName: String,
+    val face: String,
+    val updateTime: Long,
+)
+
+data class HistoryUiState(
+    val items: List<HistoryItemUiState> = emptyList(),
+)
+
 class MainViewModel(
     private val repository: LiveRepository,
 ) : ViewModel() {
+    private var channelCursor: Int = -1
 
     private val _homeState = MutableStateFlow(HomeUiState())
     val homeState: StateFlow<HomeUiState> = _homeState.asStateFlow()
@@ -35,25 +65,56 @@ class MainViewModel(
     private val _roomState = MutableStateFlow(RoomUiState())
     val roomState: StateFlow<RoomUiState> = _roomState.asStateFlow()
 
+    private val _followState = MutableStateFlow(FollowUiState())
+    val followState: StateFlow<FollowUiState> = _followState.asStateFlow()
+
+    private val _historyState = MutableStateFlow(HistoryUiState())
+    val historyState: StateFlow<HistoryUiState> = _historyState.asStateFlow()
+
     init {
         _homeState.value = HomeUiState(sites = repository.allSites().map { it.id })
+        refreshFollows()
+        refreshHistory()
     }
 
     suspend fun hot(siteId: String): List<LiveRoomItem> = repository.hotRooms(siteId).items
 
+    suspend fun categoryEntries(siteId: String): List<LiveSubCategory> {
+        return repository.categories(siteId).flatMap { top ->
+            if (top.children.isNotEmpty()) {
+                top.children
+            } else {
+                listOf(
+                    LiveSubCategory(
+                        id = top.id,
+                        parentId = top.id,
+                        name = top.name,
+                    )
+                )
+            }
+        }
+    }
+
+    suspend fun categoryRooms(siteId: String, categoryId: String, parentId: String): List<LiveRoomItem> =
+        repository.categoryRooms(siteId, categoryId, parentId).items
+
     suspend fun search(siteId: String, keyword: String): List<LiveRoomItem> = repository.search(siteId, keyword)
 
-    fun loadRoom(siteId: String, roomId: String) {
+    suspend fun searchAnchors(siteId: String, keyword: String): List<LiveAnchorItem> =
+        repository.searchAnchors(siteId, keyword)
+
+    fun loadRoom(siteId: String, roomId: String, preferredQualityLevel: Int = 0) {
         viewModelScope.launch {
             val detail = repository.roomDetail(siteId, roomId)
             val qualities = repository.playQualities(siteId, detail)
-            val preferred = qualities.getOrNull(0)
+            val selectedQuality = preferredQualityLevel.coerceIn(0, (qualities.size - 1).coerceAtLeast(0))
+            val preferred = qualities.getOrNull(selectedQuality)
             val stream = preferred?.let { repository.playUrls(siteId, detail, it).urls.firstOrNull().orEmpty() }.orEmpty()
 
             _roomState.value = RoomUiState(
                 detail = detail,
                 qualities = qualities,
-                selectedQuality = 0,
+                selectedQuality = selectedQuality,
                 streamUrl = stream,
                 showControls = false,
             )
@@ -67,6 +128,7 @@ class MainViewModel(
                     face = detail.userAvatar,
                 )
             )
+            refreshHistory()
         }
     }
 
@@ -90,12 +152,75 @@ class MainViewModel(
                     face = detail.userAvatar,
                 )
             )
+            refreshFollows()
         }
     }
 
     fun unfollowCurrent(siteId: String, roomId: String) {
         viewModelScope.launch {
             repository.removeFollow("$siteId-$roomId")
+            refreshFollows()
         }
+    }
+
+    fun refreshFollows() {
+        viewModelScope.launch {
+            val follows = repository.followsSnapshot()
+            _followState.value = FollowUiState(
+                items = follows.map { item ->
+                    FollowItemUiState(
+                        id = item.id,
+                        siteId = item.siteId,
+                        roomId = item.roomId,
+                        userName = item.userName,
+                        face = item.face,
+                        addTime = item.addTime,
+                    )
+                }
+            )
+        }
+    }
+
+    fun refreshHistory() {
+        viewModelScope.launch {
+            val history = repository.history().first()
+            _historyState.value = HistoryUiState(
+                items = history.map { item ->
+                    HistoryItemUiState(
+                        id = item.id,
+                        siteId = item.siteId,
+                        roomId = item.roomId,
+                        userName = item.userName,
+                        face = item.face,
+                        updateTime = item.updateTime,
+                    )
+                }
+            )
+        }
+    }
+
+    fun clearHistory() {
+        viewModelScope.launch {
+            repository.clearHistory()
+            refreshHistory()
+        }
+    }
+
+    fun switchChannel(direction: Int) {
+        if (direction == 0) return
+        val channels = buildList {
+            _historyState.value.items.forEach { add(it.siteId to it.roomId) }
+            _followState.value.items.forEach { add(it.siteId to it.roomId) }
+        }.distinct()
+        if (channels.isEmpty()) return
+
+        channelCursor = if (channelCursor < 0) {
+            0
+        } else {
+            val size = channels.size
+            (((channelCursor + direction) % size) + size) % size
+        }
+        val (siteId, roomId) = channels[channelCursor]
+        loadRoom(siteId, roomId)
     }
 }

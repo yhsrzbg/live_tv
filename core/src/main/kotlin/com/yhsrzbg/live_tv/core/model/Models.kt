@@ -71,6 +71,7 @@ data class LivePlayUrl(
 
 enum class LiveMessageType {
     Chat,
+    Gift,
     Online,
     SuperChat,
 }
@@ -83,7 +84,19 @@ data class LiveColor(
 
 data class LiveMessage(
     val type: LiveMessageType,
+    val userName: String = "",
     val message: String = "",
     val color: LiveColor = LiveColor(255, 255, 255),
     val data: Int = 0,
+)
+
+data class LiveSuperChatMessage(
+    val userName: String,
+    val face: String,
+    val message: String,
+    val price: Int,
+    val startTime: Long,
+    val endTime: Long,
+    val backgroundColor: String,
+    val backgroundBottomColor: String,
 )

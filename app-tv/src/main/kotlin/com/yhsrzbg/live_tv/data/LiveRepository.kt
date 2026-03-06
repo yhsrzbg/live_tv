@@ -3,6 +3,7 @@ package com.yhsrzbg.live_tv.data
 import com.yhsrzbg.live_tv.core.SiteRegistry
 import com.yhsrzbg.live_tv.core.api.LiveSite
 import com.yhsrzbg.live_tv.core.model.LiveCategoryResult
+import com.yhsrzbg.live_tv.core.model.LiveAnchorItem
 import com.yhsrzbg.live_tv.core.model.LivePlayQuality
 import com.yhsrzbg.live_tv.core.model.LivePlayUrl
 import com.yhsrzbg.live_tv.core.model.LiveRoomDetail
@@ -32,9 +33,17 @@ class LiveRepository(
     suspend fun search(siteId: String, keyword: String, page: Int = 1): List<LiveRoomItem> =
         site(siteId).searchRooms(keyword, page).items
 
+    suspend fun searchAnchors(siteId: String, keyword: String, page: Int = 1): List<LiveAnchorItem> =
+        site(siteId).searchAnchors(keyword, page).items
+
     suspend fun categories(siteId: String) = site(siteId).categories()
 
+    suspend fun categoryRooms(siteId: String, categoryId: String, parentId: String, page: Int = 1): LiveCategoryResult =
+        site(siteId).categoryRooms(categoryId, parentId, page)
+
     fun follows(): Flow<List<FollowEntity>> = database.followDao().observeAll()
+
+    suspend fun followsSnapshot(): List<FollowEntity> = database.followDao().all()
 
     suspend fun upsertFollow(item: FollowEntity) = database.followDao().upsert(item)
 
@@ -45,4 +54,6 @@ class LiveRepository(
     fun history(): Flow<List<HistoryEntity>> = database.historyDao().observeAll()
 
     suspend fun addHistory(item: HistoryEntity) = database.historyDao().upsert(item)
+
+    suspend fun clearHistory() = database.historyDao().clearHistory()
 }

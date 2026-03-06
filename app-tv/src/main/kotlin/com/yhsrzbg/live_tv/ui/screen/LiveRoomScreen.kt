@@ -25,6 +25,51 @@ import com.yhsrzbg.live_tv.input.RemoteKeyMapper
 import com.yhsrzbg.live_tv.ui.state.RoomUiState
 import kotlinx.coroutines.delay
 
+data class LiveRoomActionHooks(
+    val onToggleControls: () -> Unit,
+    val onShowSettings: () -> Unit,
+    val onShowFollow: () -> Unit,
+    val onPrevChannel: () -> Unit,
+    val onNextChannel: () -> Unit,
+    val onBack: () -> Unit,
+)
+
+fun handleRemoteIntent(intent: RemoteIntent, hooks: LiveRoomActionHooks): Boolean {
+    return when (intent) {
+        RemoteIntent.ToggleControls -> {
+            hooks.onToggleControls()
+            true
+        }
+
+        RemoteIntent.OpenSettings -> {
+            hooks.onShowSettings()
+            true
+        }
+
+        RemoteIntent.OpenFollowList -> {
+            hooks.onShowFollow()
+            true
+        }
+
+        RemoteIntent.PrevChannel -> {
+            hooks.onPrevChannel()
+            true
+        }
+
+        RemoteIntent.NextChannel -> {
+            hooks.onNextChannel()
+            true
+        }
+
+        RemoteIntent.Back -> {
+            hooks.onBack()
+            true
+        }
+
+        RemoteIntent.None -> false
+    }
+}
+
 @Composable
 fun LiveRoomScreen(
     siteId: String,
@@ -39,6 +84,14 @@ fun LiveRoomScreen(
     onBack: () -> Unit,
 ) {
     val danmakuEnabled by settingsStore.danmakuEnabled.collectAsState(initial = true)
+    val hooks = LiveRoomActionHooks(
+        onToggleControls = onToggleControls,
+        onShowSettings = onShowSettings,
+        onShowFollow = onShowFollow,
+        onPrevChannel = onPrevChannel,
+        onNextChannel = onNextChannel,
+        onBack = onBack,
+    )
 
     LaunchedEffect(state.showControls) {
         if (state.showControls) {
@@ -53,33 +106,7 @@ fun LiveRoomScreen(
             .background(Color.Black)
             .onPreviewKeyEvent { event ->
                 if (event.nativeKeyEvent.action != KeyEvent.ACTION_DOWN) return@onPreviewKeyEvent false
-                when (RemoteKeyMapper.map(event.nativeKeyEvent.keyCode)) {
-                    RemoteIntent.ToggleControls -> {
-                        onToggleControls(); true
-                    }
-
-                    RemoteIntent.OpenSettings -> {
-                        onShowSettings(); true
-                    }
-
-                    RemoteIntent.OpenFollowList -> {
-                        onShowFollow(); true
-                    }
-
-                    RemoteIntent.PrevChannel -> {
-                        onPrevChannel(); true
-                    }
-
-                    RemoteIntent.NextChannel -> {
-                        onNextChannel(); true
-                    }
-
-                    RemoteIntent.Back -> {
-                        onBack(); true
-                    }
-
-                    RemoteIntent.None -> false
-                }
+                handleRemoteIntent(RemoteKeyMapper.map(event.nativeKeyEvent.keyCode), hooks)
             }
     ) {
         Text(
