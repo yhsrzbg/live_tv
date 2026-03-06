@@ -11,8 +11,10 @@ Date: 2026-03-06
 ## Source validation
 
 - Expected old path: `old/simple_live_tv_app/lib/modules`
-- Actual status: path not present in current repository snapshot
-- Handling: matrix is built from migration plan mapping + current `app-tv` implementation state
+- Actual status:
+  - Present in primary workspace: `E:\work\live_tv\old\simple_live_tv_app\lib\modules`
+  - Not visible in current git worktree checkout (`.worktrees/simple-live-tv-migration`)
+- Handling: old-module list is validated from primary workspace path; migration status is evaluated against current `app-tv` implementation state
 
 ## Feature migration matrix
 
