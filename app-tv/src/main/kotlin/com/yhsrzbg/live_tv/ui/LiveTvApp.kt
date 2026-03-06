@@ -13,12 +13,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.yhsrzbg.live_tv.data.LiveRepository
 import com.yhsrzbg.live_tv.data.settings.SettingsStore
+import com.yhsrzbg.live_tv.ui.feature.category.CategoryScreen
+import com.yhsrzbg.live_tv.ui.feature.home.HomeScreen
+import com.yhsrzbg.live_tv.ui.feature.hot.HotScreen
+import com.yhsrzbg.live_tv.ui.feature.search.SearchScreen
 import com.yhsrzbg.live_tv.ui.navigation.Route
-import com.yhsrzbg.live_tv.ui.screen.CategoryScreen
-import com.yhsrzbg.live_tv.ui.screen.HomeScreen
-import com.yhsrzbg.live_tv.ui.screen.HotScreen
 import com.yhsrzbg.live_tv.ui.screen.LiveRoomScreen
-import com.yhsrzbg.live_tv.ui.screen.SearchScreen
 import com.yhsrzbg.live_tv.ui.state.MainViewModel
 
 @Composable
