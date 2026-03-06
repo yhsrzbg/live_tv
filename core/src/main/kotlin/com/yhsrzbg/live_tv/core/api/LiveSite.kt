@@ -8,6 +8,7 @@ import com.yhsrzbg.live_tv.core.model.LivePlayUrl
 import com.yhsrzbg.live_tv.core.model.LiveRoomDetail
 import com.yhsrzbg.live_tv.core.model.LiveSearchAnchorResult
 import com.yhsrzbg.live_tv.core.model.LiveSearchRoomResult
+import com.yhsrzbg.live_tv.core.model.LiveSuperChatMessage
 
 interface LiveSite {
     val id: String
@@ -24,4 +25,5 @@ interface LiveSite {
     suspend fun playQualities(detail: LiveRoomDetail): List<LivePlayQuality>
     suspend fun playUrls(detail: LiveRoomDetail, quality: LivePlayQuality): LivePlayUrl
     suspend fun liveStatus(roomId: String): Boolean
+    suspend fun superChatMessages(roomId: String): List<LiveSuperChatMessage> = emptyList()
 }

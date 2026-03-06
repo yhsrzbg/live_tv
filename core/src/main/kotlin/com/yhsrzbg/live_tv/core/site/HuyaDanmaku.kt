@@ -114,6 +114,7 @@ class HuyaDanmaku(
                             bus.emit(
                                 LiveMessage(
                                     type = LiveMessageType.Chat,
+                                    userName = message.userInfo.nickName,
                                     message = message.content,
                                     color = message.bulletFormat.fontColor.toLiveColor(),
                                 )
@@ -213,4 +214,3 @@ private class HYMessage : TarsStructBase() {
         bulletFormat = (input.read(bulletFormat, 6, false) as? HYBulletFormat) ?: HYBulletFormat()
     }
 }
-

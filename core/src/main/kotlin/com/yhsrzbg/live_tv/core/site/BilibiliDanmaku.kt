@@ -171,6 +171,7 @@ class BilibiliDanmaku(
                         bus.emit(
                             LiveMessage(
                                 type = LiveMessageType.Chat,
+                                userName = userName,
                                 message = message,
                                 color = color.toLiveColor(),
                                 data = 0,
@@ -235,4 +236,3 @@ class BilibiliDanmaku(
         return LiveColor(r, g, b)
     }
 }
-

@@ -166,6 +166,7 @@ class DouyinDanmaku(
                             bus.emit(
                                 LiveMessage(
                                     type = LiveMessageType.Chat,
+                                    userName = chat.user.nickName,
                                     message = chat.content,
                                 )
                             )

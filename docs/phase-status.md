@@ -1,29 +1,63 @@
-# Phase 1 Status and Deferred Scope
+# Phase Status
 
-## Implemented in this phase
-- Multi-module Android project: `:app-tv` + `:core`
-- Android 11+ baseline (`minSdk=30`)
-- Compose navigation and main routes: Home/Hot/Category/Search/LiveRoom
-- Remote key mapping aligned with legacy intent:
-  - OK/Enter: toggle controls
-  - Left: follow list intent
-  - Right/Menu: settings intent
-  - Up/Down: prev/next channel intent
-  - Back: exit live room
-- Core site registry with four site providers (`bilibili`, `douyu`, `huya`, `douyin`)
-- DataStore + Room foundation (settings/history/follow)
-- GitHub Actions build pipeline for release arm64-v8a APK only
+Last updated: 2026-03-06
 
-## Deferred (not implemented in Phase 1)
-- Full account system (Bilibili QR login, cookie/session management)
-- Full sync workflow (discovery, protocol, conflict handling)
-- Full settings parity with Flutter TV app
-- Full follow/history management UX parity
-- Full visual/animation 1:1 parity with Flutter UI
-- Site-specific production danmaku protocol implementation
-- Site-specific production parser/signing implementation parity
+## Goal Alignment (against original reconstruction target)
 
-## Next phases
-- Phase 2: complete account + sync + full settings/follow/history
-- Phase 3: strengthen parser resilience, player recovery, expand automated test coverage
-- Phase 4: release governance (tag/release strategy, rollback, changelog discipline)
+### 1) Project shape and platform baseline
+- Status: Done
+- Evidence:
+  - Multi-module project exists: `:app-tv` + `:core`
+  - `minSdk=30` in both modules
+  - Kotlin + Compose + Media3 stack in `app-tv`
+
+### 2) `simple_live_core` -> `:core` migration
+- Status: Mostly done (mainline complete)
+- Done:
+  - Unified `LiveSite` contract (suspend-based)
+  - Unified `LiveDanmaku` contract (Flow-based)
+  - Unified models for list/detail/play/search/danmaku
+  - Four site providers: `bilibili`, `douyu`, `huya`, `douyin`
+  - Site parser/signing and danmaku protocol implementations present
+  - Super Chat contract and Bilibili implementation are in place
+- Known gap kept intentionally in current phase:
+  - Old Flutter `CoreLog` logging abstraction not ported to `:core`
+
+### 3) `simple_live_tv_app` -> `:app-tv` (Phase 1 mainline)
+- Status: In progress (main route available, parity pending)
+- Done:
+  - Compose routes: Home/Hot/Category/Search/LiveRoom
+  - Remote key intent mapping aligned to legacy intent:
+    - OK/Enter -> controls
+    - Left -> follow list intent
+    - Right/Menu -> settings intent
+    - Up/Down -> prev/next channel intent
+    - Back -> exit live room
+  - DataStore + Room foundation (settings/history/follow storage)
+- Not yet at old app parity:
+  - Full UI/UX parity for follow/history/settings flows
+  - Full live-room interaction parity and TV focus polish
+
+### 4) CI/CD and release packaging target
+- Status: Partially done (release pipeline definition exists, release build stability pending)
+- Done:
+  - GitHub Actions workflow exists
+  - Uses signing secrets and builds release
+  - Uploads ARM APK artifacts (`arm64-v8a` + `armeabi-v7a`)
+- Pending / to tighten:
+  - Workflow currently runs `lint/test/assembleRelease` on `:app-tv` only; `:core` checks are not explicitly included
+  - App module ABI split still includes `x86/x86_64` for local builds; CI upload currently keeps ARM-only outputs (`arm64-v8a` + `armeabi-v7a`)
+  - Local equivalent release validation currently fails at `:app-tv:minifyReleaseWithR8` due to missing `java.beans.*` classes (Rhino reference path)
+  - Repo bootstrap requirement via fixed `gh` path is process-level and not tracked in this repo file
+
+## Deferred Scope (confirmed)
+- Full account system (Bilibili QR login, cookie/session management UX)
+- Full multi-device sync workflow
+- Full settings/follow/history UX parity with old Flutter TV app
+- Full visual/animation 1:1 parity with old Flutter UI
+- Broader automated testing matrix (parser edge cases, player state machine, TV UI focus E2E)
+
+## Suggested Next Milestones
+- Phase 2: app-tv parity pass (follow/history/settings/live-room controls + focus behavior)
+- Phase 3: robustness pass (player recovery, parser fallback, wider test coverage including `:core`)
+- Phase 4: release governance (tags/changelog/rollback discipline)

@@ -12,6 +12,7 @@ import com.yhsrzbg.live_tv.core.model.LiveRoomItem
 import com.yhsrzbg.live_tv.core.model.LiveSearchAnchorResult
 import com.yhsrzbg.live_tv.core.model.LiveSearchRoomResult
 import com.yhsrzbg.live_tv.core.model.LiveSubCategory
+import com.yhsrzbg.live_tv.core.model.LiveSuperChatMessage
 import com.yhsrzbg.live_tv.core.network.CoreHttpClient
 import com.yhsrzbg.live_tv.core.util.array
 import com.yhsrzbg.live_tv.core.util.asObj
@@ -255,6 +256,31 @@ class BilibiliSite(
             headers = headers(),
         )
         return root.obj("data")?.int("live_status") == 1
+    }
+
+    override suspend fun superChatMessages(roomId: String): List<LiveSuperChatMessage> {
+        val root = http.getJson(
+            "https://api.live.bilibili.com/av/v1/SuperChat/getMessageList",
+            query = mapOf("room_id" to roomId),
+            headers = headers(),
+        )
+        return root.obj("data")
+            ?.array("list")
+            .orEmpty()
+            .mapNotNull { e ->
+                val o = e.asObj() ?: return@mapNotNull null
+                val user = o.obj("user_info").orEmpty()
+                LiveSuperChatMessage(
+                    userName = user.str("uname"),
+                    face = user.str("face"),
+                    message = o.str("message"),
+                    price = o.int("price"),
+                    startTime = o.str("start_time").toLongOrNull()?.times(1000L) ?: 0L,
+                    endTime = o.str("end_time").toLongOrNull()?.times(1000L) ?: 0L,
+                    backgroundColor = o.str("background_color"),
+                    backgroundBottomColor = o.str("background_bottom_color"),
+                )
+            }
     }
 
     private suspend fun roomPlayInfo(roomId: String, qn: String? = null) = http.getJson(

@@ -112,12 +112,14 @@ class DouyuDanmaku(
 
         val message = map["txt"].orEmpty()
         if (message.isBlank()) return
+        val userName = map["nn"].orEmpty()
 
         val color = map["col"]?.toIntOrNull().toLiveColor()
         scope.launch {
             bus.emit(
                 LiveMessage(
                     type = LiveMessageType.Chat,
+                    userName = userName,
                     message = message,
                     color = color,
                 )
@@ -151,4 +153,3 @@ class DouyuDanmaku(
         else -> LiveColor(255, 255, 255)
     }
 }
-
