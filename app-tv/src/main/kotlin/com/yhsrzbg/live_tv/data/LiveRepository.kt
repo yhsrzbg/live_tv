@@ -48,4 +48,6 @@ class LiveRepository(
     fun history(): Flow<List<HistoryEntity>> = database.historyDao().observeAll()
 
     suspend fun addHistory(item: HistoryEntity) = database.historyDao().upsert(item)
+
+    suspend fun clearHistory() = database.historyDao().clearHistory()
 }
