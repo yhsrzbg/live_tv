@@ -38,7 +38,7 @@ jobs:
           EOF
 
       - name: Build
-        run: ./gradlew :app-tv:lint :app-tv:testDebugUnitTest :app-tv:assembleRelease
+        run: ./gradlew :core:test :app-tv:lint :app-tv:testDebugUnitTest :app-tv:assembleRelease
 
       - name: Upload arm APKs (v8a + v7a)
         uses: actions/upload-artifact@v4

@@ -64,6 +64,13 @@ Last updated: 2026-03-06
   - [x] keep rules or dependency fix chosen
   - [x] local `:app-tv:assembleRelease` passes after fix
 
+### 6) CI parity policy checklist (Task 15)
+- [x] workflow includes `:core:test` explicitly
+- [x] release artifact list is documented accurately
+- [x] local workflow-equivalent command result is documented
+- Local verification:
+  - 2026-03-06: `./gradlew :core:test :app-tv:lint :app-tv:testDebugUnitTest :app-tv:assembleRelease --console=plain` PASS
+
 ## Deferred Scope (confirmed)
 - Full account system (Bilibili QR login, cookie/session management UX)
 - Full multi-device sync workflow

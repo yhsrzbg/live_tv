@@ -30,36 +30,40 @@ class HistoryStateTest {
             ApplicationProvider.getApplicationContext(),
             LiveTvDatabase::class.java,
         ).build()
-        val repository = LiveRepository(
-            database = database,
-            registry = SiteRegistry.fromSites(emptyList()),
-        )
-        repository.addHistory(
-            HistoryEntity(
-                id = "1",
-                siteId = "s",
-                roomId = "r1",
-                userName = "u1",
-                face = "",
+        try {
+            val repository = LiveRepository(
+                database = database,
+                registry = SiteRegistry.fromSites(emptyList()),
             )
-        )
-        repository.addHistory(
-            HistoryEntity(
-                id = "2",
-                siteId = "s",
-                roomId = "r2",
-                userName = "u2",
-                face = "",
+            repository.addHistory(
+                HistoryEntity(
+                    id = "1",
+                    siteId = "s",
+                    roomId = "r1",
+                    userName = "u1",
+                    face = "",
+                )
             )
-        )
-        assertEquals(2, repository.history().first().size)
+            repository.addHistory(
+                HistoryEntity(
+                    id = "2",
+                    siteId = "s",
+                    roomId = "r2",
+                    userName = "u2",
+                    face = "",
+                )
+            )
+            assertEquals(2, repository.history().first().size)
 
-        val viewModel = MainViewModel(repository)
-        viewModel.clearHistory()
-        advanceUntilIdle()
+            val viewModel = MainViewModel(repository)
+            viewModel.clearHistory()
+            advanceUntilIdle()
 
-        assertEquals(0, repository.history().first().size)
-        database.close()
-        Dispatchers.resetMain()
+            assertEquals(0, repository.history().first().size)
+            advanceUntilIdle()
+        } finally {
+            Dispatchers.resetMain()
+            database.close()
+        }
     }
 }

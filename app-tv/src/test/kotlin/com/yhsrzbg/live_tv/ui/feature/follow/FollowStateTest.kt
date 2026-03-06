@@ -7,10 +7,8 @@ import com.yhsrzbg.live_tv.data.LiveRepository
 import com.yhsrzbg.live_tv.data.db.FollowEntity
 import com.yhsrzbg.live_tv.data.db.LiveTvDatabase
 import com.yhsrzbg.live_tv.ui.state.MainViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -31,43 +29,39 @@ class FollowStateTest {
             ApplicationProvider.getApplicationContext(),
             LiveTvDatabase::class.java,
         ).build()
-        val repository = LiveRepository(
-            database = database,
-            registry = SiteRegistry.fromSites(emptyList()),
-        )
-        repository.upsertFollow(
-            FollowEntity(
-                id = "old",
-                siteId = "s",
-                roomId = "1",
-                userName = "u1",
-                face = "",
-                addTime = 10L,
+        try {
+            val repository = LiveRepository(
+                database = database,
+                registry = SiteRegistry.fromSites(emptyList()),
             )
-        )
-        repository.upsertFollow(
-            FollowEntity(
-                id = "new",
-                siteId = "s",
-                roomId = "2",
-                userName = "u2",
-                face = "",
-                addTime = 20L,
+            repository.upsertFollow(
+                FollowEntity(
+                    id = "old",
+                    siteId = "s",
+                    roomId = "1",
+                    userName = "u1",
+                    face = "",
+                    addTime = 10L,
+                )
             )
-        )
-        assertEquals(listOf("new", "old"), repository.follows().first().map { it.id })
-        val viewModel = MainViewModel(repository)
-
-        repeat(20) {
+            repository.upsertFollow(
+                FollowEntity(
+                    id = "new",
+                    siteId = "s",
+                    roomId = "2",
+                    userName = "u2",
+                    face = "",
+                    addTime = 20L,
+                )
+            )
+            assertEquals(listOf("new", "old"), repository.followsSnapshot().map { it.id })
+            val viewModel = MainViewModel(repository)
+            viewModel.refreshFollows()
             advanceUntilIdle()
-            if (viewModel.followState.value.items.isNotEmpty()) {
-                return@repeat
-            }
-            delay(20)
+            assertEquals(listOf("new", "old"), viewModel.followState.value.items.map { it.id })
+        } finally {
+            Dispatchers.resetMain()
+            database.close()
         }
-
-        assertEquals(listOf("new", "old"), viewModel.followState.value.items.map { it.id })
-        database.close()
-        Dispatchers.resetMain()
     }
 }

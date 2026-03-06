@@ -10,4 +10,7 @@ Kotlin + Jetpack Compose Android TV rebuild of dart_simple_live simple_live_tv_a
 - minSdk 30 (Android 11)
 
 ## Build
-- GitHub Actions workflow builds `arm64-v8a` release APK only.
+- CI verification command: `./gradlew :core:test :app-tv:lint :app-tv:testDebugUnitTest :app-tv:assembleRelease`
+- GitHub Actions workflow uploads ARM release APKs:
+  - `app-tv-arm64-v8a-release.apk`
+  - `app-tv-armeabi-v7a-release.apk`
