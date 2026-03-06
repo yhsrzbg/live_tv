@@ -1,2 +1,7 @@
 -dontwarn kotlin.**
 -dontwarn kotlinx.coroutines.**
+-dontwarn java.beans.BeanDescriptor
+-dontwarn java.beans.BeanInfo
+-dontwarn java.beans.IntrospectionException
+-dontwarn java.beans.Introspector
+-dontwarn java.beans.PropertyDescriptor

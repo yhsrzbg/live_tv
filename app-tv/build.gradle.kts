@@ -73,6 +73,9 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+            all {
+                it.systemProperty("appTvModuleDir", project.projectDir.absolutePath)
+            }
         }
     }
 

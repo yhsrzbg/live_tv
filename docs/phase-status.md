@@ -50,8 +50,19 @@ Last updated: 2026-03-06
 - Pending / to tighten:
   - Workflow currently runs `lint/test/assembleRelease` on `:app-tv` only; `:core` checks are not explicitly included
   - App module ABI split still includes `x86/x86_64` for local builds; CI upload currently keeps ARM-only outputs (`arm64-v8a` + `armeabi-v7a`)
-  - Local equivalent release validation currently fails at `:app-tv:minifyReleaseWithR8` due to missing `java.beans.*` classes (Rhino reference path)
   - Repo bootstrap requirement via fixed `gh` path is process-level and not tracked in this repo file
+
+### 5) Release minify blocker (resolved on 2026-03-06)
+- Status: Done
+- Root cause:
+  - `:app-tv:minifyReleaseWithR8` failed due to Rhino references to `java.beans.*` APIs not present on Android.
+- Fix:
+  - Added targeted `-dontwarn java.beans.*` suppressions in `app-tv/proguard-rules.pro`.
+  - Added a release config smoke test to guard the rule presence.
+- Checklist:
+  - [x] R8 missing-class root cause identified
+  - [x] keep rules or dependency fix chosen
+  - [x] local `:app-tv:assembleRelease` passes after fix
 
 ## Deferred Scope (confirmed)
 - Full account system (Bilibili QR login, cookie/session management UX)
