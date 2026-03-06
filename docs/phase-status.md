@@ -71,6 +71,17 @@ Last updated: 2026-03-06
 - Local verification:
   - 2026-03-06: `./gradlew :core:test :app-tv:lint :app-tv:testDebugUnitTest :app-tv:assembleRelease --console=plain` PASS
 
+### 7) Final migration acceptance pass (Task 16)
+- Status: In progress (automated suite complete, manual TV checklist pending)
+- Automated evidence:
+  - `./gradlew :core:test --console=plain` PASS
+  - `./gradlew :app-tv:testDebugUnitTest --console=plain` PASS
+  - `./gradlew :app-tv:lint --console=plain` PASS
+  - `./gradlew :app-tv:assembleDebug --console=plain` PASS
+  - `./gradlew :app-tv:assembleRelease --console=plain` PASS
+- Acceptance record:
+  - `docs/plans/2026-03-06-simple-live-tv-app-migration-acceptance.md`
+
 ## Deferred Scope (confirmed)
 - Full account system (Bilibili QR login, cookie/session management UX)
 - Full multi-device sync workflow
