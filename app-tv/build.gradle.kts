@@ -70,6 +70,12 @@ android {
         }
     }
 
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
     splits {
         abi {
             isEnable = true

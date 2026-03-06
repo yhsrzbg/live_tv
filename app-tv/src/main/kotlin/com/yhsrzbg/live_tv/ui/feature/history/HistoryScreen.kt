@@ -1,7 +1,6 @@
 package com.yhsrzbg.live_tv.ui.feature.history
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,9 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.yhsrzbg.live_tv.ui.component.TvActionButton
+import com.yhsrzbg.live_tv.ui.component.TvCard
+import com.yhsrzbg.live_tv.ui.component.TvTopBar
 import com.yhsrzbg.live_tv.ui.state.HistoryItemUiState
 
 @Composable
@@ -37,10 +36,9 @@ fun HistoryScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Button(onClick = onBack) { Text("Back") }
-            Button(onClick = onClear) { Text("Clear") }
-            Text("History", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+        TvTopBar(title = "History") {
+            TvActionButton(text = "Back", onClick = onBack)
+            TvActionButton(text = "Clear", onClick = onClear)
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             items(items, key = { it.id }) { item ->
@@ -55,15 +53,13 @@ private fun HistoryCard(
     item: HistoryItemUiState,
     onOpenRoom: (String, String) -> Unit,
 ) {
-    Card(
+    TvCard(
+        onClick = { onOpenRoom(item.siteId, item.roomId) },
         modifier = Modifier
             .fillMaxWidth()
-            .focusable()
-            .clickable { onOpenRoom(item.siteId, item.roomId) },
-        shape = RoundedCornerShape(16.dp),
+            .focusable(),
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(item.userName, style = MaterialTheme.typography.titleMedium)

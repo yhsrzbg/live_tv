@@ -6,13 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.yhsrzbg.live_tv.ui.component.TvActionButton
 
 @Composable
 fun HomeScreen(
@@ -31,15 +31,10 @@ fun HomeScreen(
         Text("Live TV", style = MaterialTheme.typography.headlineMedium, color = Color.White)
         sites.forEach { siteId ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ActionButton(text = "$siteId Hot") { onOpenHot(siteId) }
-                ActionButton(text = "$siteId Category") { onOpenCategory(siteId) }
-                ActionButton(text = "$siteId Search") { onOpenSearch(siteId) }
+                TvActionButton(text = "$siteId Hot") { onOpenHot(siteId) }
+                TvActionButton(text = "$siteId Category") { onOpenCategory(siteId) }
+                TvActionButton(text = "$siteId Search") { onOpenSearch(siteId) }
             }
         }
     }
-}
-
-@Composable
-private fun ActionButton(text: String, onClick: () -> Unit) {
-    Button(onClick = onClick) { Text(text) }
 }

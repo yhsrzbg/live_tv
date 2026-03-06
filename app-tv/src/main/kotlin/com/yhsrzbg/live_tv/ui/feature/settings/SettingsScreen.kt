@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.yhsrzbg.live_tv.ui.component.TvActionButton
+import com.yhsrzbg.live_tv.ui.component.TvTopBar
 
 enum class SettingsTab { Player, Danmaku, Follow, Account, About }
 
@@ -54,16 +55,13 @@ fun SettingsScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Button(onClick = onBack) { Text("Back") }
-            Text("Settings", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+        TvTopBar(title = "Settings") {
+            TvActionButton(text = "Back", onClick = onBack)
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             SettingsTab.values().forEach { tab ->
-                Button(onClick = { activeTab = tab }) {
-                    Text(tab.name)
-                }
+                TvActionButton(text = tab.name, onClick = { activeTab = tab })
             }
         }
 
@@ -101,17 +99,18 @@ private fun PlayerSettings(
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text("Quality: $qualityLevel", color = Color.White)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = { onSetQualityLevel((qualityLevel - 1).coerceAtLeast(0)) }) { Text("-") }
-            Button(onClick = { onSetQualityLevel(qualityLevel + 1) }) { Text("+") }
+            TvActionButton(text = "-", onClick = { onSetQualityLevel((qualityLevel - 1).coerceAtLeast(0)) })
+            TvActionButton(text = "+", onClick = { onSetQualityLevel(qualityLevel + 1) })
         }
         Text("Scale Mode: $scaleMode", color = Color.White)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = { onSetScaleMode((scaleMode - 1).coerceAtLeast(0)) }) { Text("-") }
-            Button(onClick = { onSetScaleMode(scaleMode + 1) }) { Text("+") }
+            TvActionButton(text = "-", onClick = { onSetScaleMode((scaleMode - 1).coerceAtLeast(0)) })
+            TvActionButton(text = "+", onClick = { onSetScaleMode(scaleMode + 1) })
         }
-        Button(onClick = { onSetPlayerCompatMode(!playerCompatMode) }) {
-            Text("Player Compat: ${if (playerCompatMode) "ON" else "OFF"}")
-        }
+        TvActionButton(
+            text = "Player Compat: ${if (playerCompatMode) "ON" else "OFF"}",
+            onClick = { onSetPlayerCompatMode(!playerCompatMode) },
+        )
     }
 }
 
@@ -122,8 +121,9 @@ private fun DanmakuSettings(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text("Danmaku: ${if (danmakuEnabled) "ON" else "OFF"}", color = Color.White)
-        Button(onClick = { onToggleDanmaku(!danmakuEnabled) }) {
-            Text(if (danmakuEnabled) "Disable Danmaku" else "Enable Danmaku")
-        }
+        TvActionButton(
+            text = if (danmakuEnabled) "Disable Danmaku" else "Enable Danmaku",
+            onClick = { onToggleDanmaku(!danmakuEnabled) },
+        )
     }
 }
