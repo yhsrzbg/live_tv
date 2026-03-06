@@ -3,6 +3,7 @@ package com.yhsrzbg.live_tv.data
 import com.yhsrzbg.live_tv.core.SiteRegistry
 import com.yhsrzbg.live_tv.core.api.LiveSite
 import com.yhsrzbg.live_tv.core.model.LiveCategoryResult
+import com.yhsrzbg.live_tv.core.model.LiveAnchorItem
 import com.yhsrzbg.live_tv.core.model.LivePlayQuality
 import com.yhsrzbg.live_tv.core.model.LivePlayUrl
 import com.yhsrzbg.live_tv.core.model.LiveRoomDetail
@@ -31,6 +32,9 @@ class LiveRepository(
 
     suspend fun search(siteId: String, keyword: String, page: Int = 1): List<LiveRoomItem> =
         site(siteId).searchRooms(keyword, page).items
+
+    suspend fun searchAnchors(siteId: String, keyword: String, page: Int = 1): List<LiveAnchorItem> =
+        site(siteId).searchAnchors(keyword, page).items
 
     suspend fun categories(siteId: String) = site(siteId).categories()
 

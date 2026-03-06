@@ -6,6 +6,7 @@ import com.yhsrzbg.live_tv.core.model.LivePlayQuality
 import com.yhsrzbg.live_tv.core.model.LiveRoomDetail
 import com.yhsrzbg.live_tv.core.model.LiveRoomItem
 import com.yhsrzbg.live_tv.core.model.LiveSubCategory
+import com.yhsrzbg.live_tv.core.model.LiveAnchorItem
 import com.yhsrzbg.live_tv.data.LiveRepository
 import com.yhsrzbg.live_tv.data.db.FollowEntity
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -98,6 +99,9 @@ class MainViewModel(
         repository.categoryRooms(siteId, categoryId, parentId).items
 
     suspend fun search(siteId: String, keyword: String): List<LiveRoomItem> = repository.search(siteId, keyword)
+
+    suspend fun searchAnchors(siteId: String, keyword: String): List<LiveAnchorItem> =
+        repository.searchAnchors(siteId, keyword)
 
     fun loadRoom(siteId: String, roomId: String) {
         viewModelScope.launch {

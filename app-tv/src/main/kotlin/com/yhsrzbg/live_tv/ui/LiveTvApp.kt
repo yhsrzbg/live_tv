@@ -21,6 +21,7 @@ import com.yhsrzbg.live_tv.ui.feature.follow.FollowScreen
 import com.yhsrzbg.live_tv.ui.feature.history.HistoryScreen
 import com.yhsrzbg.live_tv.ui.feature.home.HomeScreen
 import com.yhsrzbg.live_tv.ui.feature.hot.HotScreen
+import com.yhsrzbg.live_tv.ui.feature.search.SearchAnchorScreen
 import com.yhsrzbg.live_tv.ui.feature.search.SearchScreen
 import com.yhsrzbg.live_tv.ui.feature.settings.SettingsActionHandler
 import com.yhsrzbg.live_tv.ui.feature.settings.SettingsScreen
@@ -135,8 +136,21 @@ fun LiveTvApp(
             SearchScreen(
                 siteId = siteId,
                 search = { keyword -> vm.search(siteId, keyword) },
+                onOpenAnchorSearch = { navController.navigate(Route.searchAnchor(siteId)) },
                 onOpenRoom = { roomId -> navController.navigate(Route.room(siteId, roomId)) },
                 onBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            Route.SearchAnchor.value,
+            arguments = listOf(navArgument("siteId") { type = NavType.StringType })
+        ) { backStack ->
+            val siteId = backStack.arguments?.getString("siteId").orEmpty()
+            SearchAnchorScreen(
+                siteId = siteId,
+                searchAnchors = { keyword -> vm.searchAnchors(siteId, keyword) },
+                onOpenRoom = { roomId -> navController.navigate(Route.room(siteId, roomId)) },
+                onBack = { navController.popBackStack() },
             )
         }
         composable(

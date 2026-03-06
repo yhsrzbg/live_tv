@@ -30,19 +30,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.yhsrzbg.live_tv.core.model.LiveRoomItem
+import com.yhsrzbg.live_tv.core.model.LiveAnchorItem
 import kotlinx.coroutines.launch
 
 @Composable
-fun SearchScreen(
+fun SearchAnchorScreen(
     siteId: String,
-    search: suspend (String) -> List<LiveRoomItem>,
-    onOpenAnchorSearch: () -> Unit,
+    searchAnchors: suspend (String) -> List<LiveAnchorItem>,
     onOpenRoom: (String) -> Unit,
     onBack: () -> Unit,
 ) {
     var keyword by remember { mutableStateOf("") }
-    val result = remember { mutableStateListOf<LiveRoomItem>() }
+    val result = remember { mutableStateListOf<LiveAnchorItem>() }
     val scope = rememberCoroutineScope()
 
     Column(
@@ -53,35 +52,36 @@ fun SearchScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ActionButton(text = "Back", onClick = onBack)
-            ActionButton(text = "Anchor Search", onClick = onOpenAnchorSearch)
-            Text("$siteId Search", color = Color.White, style = MaterialTheme.typography.headlineSmall)
+            Button(onClick = onBack) { Text("Back") }
+            Text("$siteId Anchor Search", color = Color.White, style = MaterialTheme.typography.headlineSmall)
         }
 
         OutlinedTextField(
             value = keyword,
             onValueChange = { keyword = it },
-            label = { Text("Keyword") },
+            label = { Text("Anchor Keyword") },
             modifier = Modifier.fillMaxWidth(),
         )
 
-        ActionButton(text = "Search") {
+        Button(onClick = {
             scope.launch {
                 result.clear()
-                result.addAll(search(keyword))
+                result.addAll(searchAnchors(keyword))
             }
+        }) {
+            Text("Search Anchor")
         }
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            items(result, key = { it.roomId }) { item ->
-                RoomCard(item = item, onOpenRoom = onOpenRoom)
+            items(result, key = { "${it.userName}-${it.roomId}" }) { item ->
+                AnchorCard(item = item, onOpenRoom = onOpenRoom)
             }
         }
     }
 }
 
 @Composable
-private fun RoomCard(item: LiveRoomItem, onOpenRoom: (String) -> Unit) {
+private fun AnchorCard(item: LiveAnchorItem, onOpenRoom: (String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,14 +96,12 @@ private fun RoomCard(item: LiveRoomItem, onOpenRoom: (String) -> Unit) {
         ) {
             Box(modifier = Modifier.size(88.dp, 50.dp).background(Color(0xFF263238)))
             Column {
-                Text(item.title, style = MaterialTheme.typography.titleMedium)
-                Text("${item.userName} · Online ${item.online}", style = MaterialTheme.typography.bodyMedium)
+                Text(item.userName, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "room=${item.roomId} · ${if (item.liveStatus) "LIVE" else "OFFLINE"}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }
-}
-
-@Composable
-private fun ActionButton(text: String, onClick: () -> Unit) {
-    Button(onClick = onClick) { Text(text) }
 }
