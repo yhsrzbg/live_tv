@@ -14,9 +14,12 @@ import androidx.navigation.navArgument
 import com.yhsrzbg.live_tv.data.LiveRepository
 import com.yhsrzbg.live_tv.data.settings.SettingsStore
 import com.yhsrzbg.live_tv.ui.feature.category.CategoryScreen
+import com.yhsrzbg.live_tv.ui.feature.follow.FollowScreen
+import com.yhsrzbg.live_tv.ui.feature.history.HistoryScreen
 import com.yhsrzbg.live_tv.ui.feature.home.HomeScreen
 import com.yhsrzbg.live_tv.ui.feature.hot.HotScreen
 import com.yhsrzbg.live_tv.ui.feature.search.SearchScreen
+import com.yhsrzbg.live_tv.ui.feature.settings.SettingsScreen
 import com.yhsrzbg.live_tv.ui.navigation.Route
 import com.yhsrzbg.live_tv.ui.screen.LiveRoomScreen
 import com.yhsrzbg.live_tv.ui.state.MainViewModel
@@ -100,6 +103,15 @@ fun LiveTvApp(
                 onNextChannel = {},
                 onBack = { navController.popBackStack() },
             )
+        }
+        composable(Route.Follow.value) {
+            FollowScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Route.History.value) {
+            HistoryScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Route.Settings.value) {
+            SettingsScreen(onBack = { navController.popBackStack() })
         }
     }
 }

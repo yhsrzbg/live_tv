@@ -6,6 +6,9 @@ sealed class Route(val value: String) {
     data object Category : Route("category/{siteId}")
     data object Search : Route("search/{siteId}")
     data object LiveRoom : Route("live-room/{siteId}/{roomId}")
+    data object Follow : Route("follow")
+    data object History : Route("history")
+    data object Settings : Route("settings")
 
     companion object {
         fun hot(siteId: String) = "hot/$siteId"
