@@ -5,12 +5,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import kotlinx.coroutines.launch
 import com.yhsrzbg.live_tv.data.LiveRepository
 import com.yhsrzbg.live_tv.data.settings.SettingsStore
 import com.yhsrzbg.live_tv.ui.feature.category.CategoryDetailScreen
@@ -20,6 +22,7 @@ import com.yhsrzbg.live_tv.ui.feature.history.HistoryScreen
 import com.yhsrzbg.live_tv.ui.feature.home.HomeScreen
 import com.yhsrzbg.live_tv.ui.feature.hot.HotScreen
 import com.yhsrzbg.live_tv.ui.feature.search.SearchScreen
+import com.yhsrzbg.live_tv.ui.feature.settings.SettingsActionHandler
 import com.yhsrzbg.live_tv.ui.feature.settings.SettingsScreen
 import com.yhsrzbg.live_tv.ui.navigation.Route
 import com.yhsrzbg.live_tv.ui.screen.LiveRoomScreen
@@ -36,6 +39,19 @@ fun LiveTvApp(
     val room by vm.roomState.collectAsState()
     val follow by vm.followState.collectAsState()
     val history by vm.historyState.collectAsState()
+    val danmakuEnabled by settingsStore.danmakuEnabled.collectAsState(initial = true)
+    val qualityLevel by settingsStore.qualityLevel.collectAsState(initial = 1)
+    val scaleMode by settingsStore.scaleMode.collectAsState(initial = 0)
+    val playerCompatMode by settingsStore.playerCompatMode.collectAsState(initial = false)
+    val scope = rememberCoroutineScope()
+    val settingsActions = remember(settingsStore) {
+        SettingsActionHandler(
+            setDanmakuEnabled = { settingsStore.setDanmakuEnabled(it) },
+            setQualityLevel = { settingsStore.setQualityLevel(it) },
+            setScaleMode = { settingsStore.setScaleMode(it) },
+            setPlayerCompatMode = { settingsStore.setPlayerCompatMode(it) },
+        )
+    }
 
     NavHost(navController = navController, startDestination = Route.Home.value) {
         composable(Route.Home.value) {
@@ -145,7 +161,19 @@ fun LiveTvApp(
             )
         }
         composable(Route.Settings.value) {
-            SettingsScreen(onBack = { navController.popBackStack() })
+            SettingsScreen(
+                danmakuEnabled = danmakuEnabled,
+                qualityLevel = qualityLevel,
+                scaleMode = scaleMode,
+                playerCompatMode = playerCompatMode,
+                onToggleDanmaku = { enabled -> scope.launch { settingsActions.onDanmakuToggleClicked(enabled) } },
+                onSetQualityLevel = { level -> scope.launch { settingsActions.onQualityLevelSelected(level) } },
+                onSetScaleMode = { mode -> scope.launch { settingsActions.onScaleModeSelected(mode) } },
+                onSetPlayerCompatMode = { enabled ->
+                    scope.launch { settingsActions.onPlayerCompatModeToggled(enabled) }
+                },
+                onBack = { navController.popBackStack() },
+            )
         }
     }
 }
