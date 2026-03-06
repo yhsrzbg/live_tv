@@ -11,6 +11,7 @@ import com.yhsrzbg.live_tv.data.db.FollowEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -39,6 +40,19 @@ data class FollowUiState(
     val items: List<FollowItemUiState> = emptyList(),
 )
 
+data class HistoryItemUiState(
+    val id: String,
+    val siteId: String,
+    val roomId: String,
+    val userName: String,
+    val face: String,
+    val updateTime: Long,
+)
+
+data class HistoryUiState(
+    val items: List<HistoryItemUiState> = emptyList(),
+)
+
 class MainViewModel(
     private val repository: LiveRepository,
 ) : ViewModel() {
@@ -52,9 +66,13 @@ class MainViewModel(
     private val _followState = MutableStateFlow(FollowUiState())
     val followState: StateFlow<FollowUiState> = _followState.asStateFlow()
 
+    private val _historyState = MutableStateFlow(HistoryUiState())
+    val historyState: StateFlow<HistoryUiState> = _historyState.asStateFlow()
+
     init {
         _homeState.value = HomeUiState(sites = repository.allSites().map { it.id })
         refreshFollows()
+        refreshHistory()
     }
 
     suspend fun hot(siteId: String): List<LiveRoomItem> = repository.hotRooms(siteId).items
@@ -104,6 +122,7 @@ class MainViewModel(
                     face = detail.userAvatar,
                 )
             )
+            refreshHistory()
         }
     }
 
@@ -153,6 +172,31 @@ class MainViewModel(
                     )
                 }
             )
+        }
+    }
+
+    fun refreshHistory() {
+        viewModelScope.launch {
+            val history = repository.history().first()
+            _historyState.value = HistoryUiState(
+                items = history.map { item ->
+                    HistoryItemUiState(
+                        id = item.id,
+                        siteId = item.siteId,
+                        roomId = item.roomId,
+                        userName = item.userName,
+                        face = item.face,
+                        updateTime = item.updateTime,
+                    )
+                }
+            )
+        }
+    }
+
+    fun clearHistory() {
+        viewModelScope.launch {
+            repository.clearHistory()
+            refreshHistory()
         }
     }
 }

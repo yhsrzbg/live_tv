@@ -35,6 +35,7 @@ fun LiveTvApp(
     val home by vm.homeState.collectAsState()
     val room by vm.roomState.collectAsState()
     val follow by vm.followState.collectAsState()
+    val history by vm.historyState.collectAsState()
 
     NavHost(navController = navController, startDestination = Route.Home.value) {
         composable(Route.Home.value) {
@@ -136,7 +137,12 @@ fun LiveTvApp(
             )
         }
         composable(Route.History.value) {
-            HistoryScreen(onBack = { navController.popBackStack() })
+            HistoryScreen(
+                items = history.items,
+                onClear = vm::clearHistory,
+                onOpenRoom = { siteId, roomId -> navController.navigate(Route.room(siteId, roomId)) },
+                onBack = { navController.popBackStack() },
+            )
         }
         composable(Route.Settings.value) {
             SettingsScreen(onBack = { navController.popBackStack() })
