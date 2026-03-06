@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.yhsrzbg.live_tv.core.model.LivePlayQuality
 import com.yhsrzbg.live_tv.core.model.LiveRoomDetail
 import com.yhsrzbg.live_tv.core.model.LiveRoomItem
+import com.yhsrzbg.live_tv.core.model.LiveSubCategory
 import com.yhsrzbg.live_tv.data.LiveRepository
 import com.yhsrzbg.live_tv.data.db.FollowEntity
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,14 +42,20 @@ class MainViewModel(
 
     suspend fun hot(siteId: String): List<LiveRoomItem> = repository.hotRooms(siteId).items
 
-    suspend fun defaultCategoryRooms(siteId: String): List<LiveRoomItem> {
-        val firstSub = repository.categories(siteId)
-            .firstOrNull()
-            ?.children
-            ?.firstOrNull()
-            ?: return emptyList()
-
-        return repository.categoryRooms(siteId, firstSub.id, firstSub.parentId).items
+    suspend fun categoryEntries(siteId: String): List<LiveSubCategory> {
+        return repository.categories(siteId).flatMap { top ->
+            if (top.children.isNotEmpty()) {
+                top.children
+            } else {
+                listOf(
+                    LiveSubCategory(
+                        id = top.id,
+                        parentId = top.id,
+                        name = top.name,
+                    )
+                )
+            }
+        }
     }
 
     suspend fun categoryRooms(siteId: String, categoryId: String, parentId: String): List<LiveRoomItem> =

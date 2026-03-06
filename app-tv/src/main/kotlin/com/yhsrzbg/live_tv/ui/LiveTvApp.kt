@@ -63,8 +63,10 @@ fun LiveTvApp(
             val siteId = backStack.arguments?.getString("siteId").orEmpty()
             CategoryScreen(
                 siteId = siteId,
-                load = { vm.defaultCategoryRooms(siteId) },
-                onOpenRoom = { roomId -> navController.navigate(Route.room(siteId, roomId)) },
+                load = { vm.categoryEntries(siteId) },
+                onOpenCategoryDetail = { categoryId, parentId ->
+                    navController.navigate(Route.categoryDetail(siteId, categoryId, parentId))
+                },
                 onBack = { navController.popBackStack() }
             )
         }
