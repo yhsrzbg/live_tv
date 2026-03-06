@@ -103,17 +103,18 @@ class MainViewModel(
     suspend fun searchAnchors(siteId: String, keyword: String): List<LiveAnchorItem> =
         repository.searchAnchors(siteId, keyword)
 
-    fun loadRoom(siteId: String, roomId: String) {
+    fun loadRoom(siteId: String, roomId: String, preferredQualityLevel: Int = 0) {
         viewModelScope.launch {
             val detail = repository.roomDetail(siteId, roomId)
             val qualities = repository.playQualities(siteId, detail)
-            val preferred = qualities.getOrNull(0)
+            val selectedQuality = preferredQualityLevel.coerceIn(0, (qualities.size - 1).coerceAtLeast(0))
+            val preferred = qualities.getOrNull(selectedQuality)
             val stream = preferred?.let { repository.playUrls(siteId, detail, it).urls.firstOrNull().orEmpty() }.orEmpty()
 
             _roomState.value = RoomUiState(
                 detail = detail,
                 qualities = qualities,
-                selectedQuality = 0,
+                selectedQuality = selectedQuality,
                 streamUrl = stream,
                 showControls = false,
             )
