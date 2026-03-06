@@ -25,6 +25,9 @@ Last updated: 2026-03-06
 
 ### 3) `simple_live_tv_app` -> `:app-tv` (Phase 1 mainline)
 - Status: In progress (main route available, parity pending)
+- Baseline matrix:
+  - Added: `docs/plans/2026-03-06-simple-live-tv-app-gap-matrix.md`
+  - Note: old source path `old/simple_live_tv_app/lib/modules` is not present in current repo snapshot; mapping baseline uses plan target + current app state
 - Done:
   - Compose routes: Home/Hot/Category/Search/LiveRoom
   - Remote key intent mapping aligned to legacy intent:
