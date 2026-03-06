@@ -409,16 +409,17 @@ git commit -m "feat(app-tv): add settings screen parity subset"
 - Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/state/MainViewModel.kt`
 - Create: `app-tv/src/test/kotlin/com/yhsrzbg/live_tv/input/RemoteKeyMapperTest.kt`
 
-**Step 1: Write failing tests for key -> action mapping and action execution hooks**
+**Step 1: Write failing tests for action execution hooks (not only key mapping)**
 
 ```kotlin
 @Test
-fun backKey_mapsToBackIntent() {
-    assertEquals(RemoteIntent.Back, RemoteKeyMapper.map(KeyEvent.KEYCODE_BACK))
-}
+fun openFollowIntent_navigatesToFollowRoute() = runTest { /* assert nav target */ }
+
+@Test
+fun prevChannelIntent_callsSwitchChannelWithMinusOne() = runTest { /* assert vm hook */ }
 ```
 
-**Step 2: Run tests to verify fail for missing behavior hooks**
+**Step 2: Run tests and verify fail for missing behavior hooks**
 
 Run: `./gradlew :app-tv:testDebugUnitTest --tests "*RemoteKeyMapperTest" --console=plain`
 Expected: FAIL for behavior hooks.
@@ -490,8 +491,17 @@ git commit -m "feat(app-tv): add search anchor flow"
 - Create: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/component/TvCard.kt`
 - Create: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/component/TvTopBar.kt`
 - Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/**/*.kt`
+- Modify: `app-tv/build.gradle.kts`
 
-**Step 1: Write snapshot-ish behavior tests for focused state styles**
+**Step 1: Add test dependencies required for Compose UI behavior tests**
+
+Run: add dependencies in `app-tv/build.gradle.kts`
+- `testImplementation("org.robolectric:robolectric:<version>")` (if unit-test route is chosen)
+- or `androidTestImplementation("androidx.compose.ui:ui-test-junit4")` + `debugImplementation("androidx.compose.ui:ui-test-manifest")` (if instrumentation route is chosen)
+
+Expected: Gradle sync/compile succeeds with selected strategy.
+
+**Step 2: Write snapshot-ish behavior tests for focused state styles**
 
 - Test: `app-tv/src/test/kotlin/com/yhsrzbg/live_tv/ui/component/TvComponentsTest.kt`
 
@@ -500,27 +510,27 @@ git commit -m "feat(app-tv): add search anchor flow"
 fun tvActionButton_exposesFocusedStyleState() { /* verify semantics/state */ }
 ```
 
-**Step 2: Run test to verify fail**
+**Step 3: Run test to verify fail**
 
 Run: `./gradlew :app-tv:testDebugUnitTest --tests "*TvComponentsTest" --console=plain`
 Expected: FAIL.
 
-**Step 3: Implement reusable components and replace ad-hoc buttons/cards**
+**Step 4: Implement reusable components and replace ad-hoc buttons/cards**
 
 ```kotlin
 @Composable
 fun TvActionButton(text: String, focused: Boolean, onClick: () -> Unit)
 ```
 
-**Step 4: Re-run tests**
+**Step 5: Re-run tests**
 
 Run: `./gradlew :app-tv:testDebugUnitTest --tests "*TvComponentsTest" --console=plain`
 Expected: PASS.
 
-**Step 5: Commit**
+**Step 6: Commit**
 
 ```bash
-git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/component app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature app-tv/src/test/kotlin/com/yhsrzbg/live_tv/ui/component/TvComponentsTest.kt
+git add app-tv/build.gradle.kts app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/component app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature app-tv/src/test/kotlin/com/yhsrzbg/live_tv/ui/component/TvComponentsTest.kt
 git commit -m "refactor(app-tv): unify tv focus components"
 ```
 
@@ -643,6 +653,7 @@ Run:
 - `./gradlew :app-tv:testDebugUnitTest --console=plain`
 - `./gradlew :app-tv:lint --console=plain`
 - `./gradlew :app-tv:assembleDebug --console=plain`
+- `./gradlew :app-tv:assembleRelease --console=plain`
 
 Expected: all PASS.
 
