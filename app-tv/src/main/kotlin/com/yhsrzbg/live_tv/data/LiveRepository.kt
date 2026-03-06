@@ -39,6 +39,8 @@ class LiveRepository(
 
     fun follows(): Flow<List<FollowEntity>> = database.followDao().observeAll()
 
+    suspend fun followsSnapshot(): List<FollowEntity> = database.followDao().all()
+
     suspend fun upsertFollow(item: FollowEntity) = database.followDao().upsert(item)
 
     suspend fun removeFollow(id: String) = database.followDao().remove(id)

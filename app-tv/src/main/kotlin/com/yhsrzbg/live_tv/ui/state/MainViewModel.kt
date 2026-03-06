@@ -26,6 +26,19 @@ data class RoomUiState(
     val showControls: Boolean = false,
 )
 
+data class FollowItemUiState(
+    val id: String,
+    val siteId: String,
+    val roomId: String,
+    val userName: String,
+    val face: String,
+    val addTime: Long,
+)
+
+data class FollowUiState(
+    val items: List<FollowItemUiState> = emptyList(),
+)
+
 class MainViewModel(
     private val repository: LiveRepository,
 ) : ViewModel() {
@@ -36,8 +49,12 @@ class MainViewModel(
     private val _roomState = MutableStateFlow(RoomUiState())
     val roomState: StateFlow<RoomUiState> = _roomState.asStateFlow()
 
+    private val _followState = MutableStateFlow(FollowUiState())
+    val followState: StateFlow<FollowUiState> = _followState.asStateFlow()
+
     init {
         _homeState.value = HomeUiState(sites = repository.allSites().map { it.id })
+        refreshFollows()
     }
 
     suspend fun hot(siteId: String): List<LiveRoomItem> = repository.hotRooms(siteId).items
@@ -110,12 +127,32 @@ class MainViewModel(
                     face = detail.userAvatar,
                 )
             )
+            refreshFollows()
         }
     }
 
     fun unfollowCurrent(siteId: String, roomId: String) {
         viewModelScope.launch {
             repository.removeFollow("$siteId-$roomId")
+            refreshFollows()
+        }
+    }
+
+    fun refreshFollows() {
+        viewModelScope.launch {
+            val follows = repository.followsSnapshot()
+            _followState.value = FollowUiState(
+                items = follows.map { item ->
+                    FollowItemUiState(
+                        id = item.id,
+                        siteId = item.siteId,
+                        roomId = item.roomId,
+                        userName = item.userName,
+                        face = item.face,
+                        addTime = item.addTime,
+                    )
+                }
+            )
         }
     }
 }

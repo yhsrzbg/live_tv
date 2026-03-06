@@ -23,6 +23,9 @@ interface FollowDao {
     @Query("SELECT * FROM follow ORDER BY addTime DESC")
     fun observeAll(): Flow<List<FollowEntity>>
 
+    @Query("SELECT * FROM follow ORDER BY addTime DESC")
+    suspend fun all(): List<FollowEntity>
+
     @Query("SELECT EXISTS(SELECT 1 FROM follow WHERE id = :id)")
     suspend fun exists(id: String): Boolean
 

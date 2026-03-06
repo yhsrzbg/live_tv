@@ -34,6 +34,7 @@ fun LiveTvApp(
     val vm: MainViewModel = viewModel(factory = MainViewModelFactory(repository))
     val home by vm.homeState.collectAsState()
     val room by vm.roomState.collectAsState()
+    val follow by vm.followState.collectAsState()
 
     NavHost(navController = navController, startDestination = Route.Home.value) {
         composable(Route.Home.value) {
@@ -128,7 +129,11 @@ fun LiveTvApp(
             )
         }
         composable(Route.Follow.value) {
-            FollowScreen(onBack = { navController.popBackStack() })
+            FollowScreen(
+                items = follow.items,
+                onOpenRoom = { siteId, roomId -> navController.navigate(Route.room(siteId, roomId)) },
+                onBack = { navController.popBackStack() },
+            )
         }
         composable(Route.History.value) {
             HistoryScreen(onBack = { navController.popBackStack() })
