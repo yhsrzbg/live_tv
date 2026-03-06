@@ -45,9 +45,10 @@
 ## Delivery Milestones
 
 1. Foundation and route skeleton complete
-2. Follow/History/Settings parity complete
-3. LiveRoom behavior parity baseline complete
-4. Verification, CI hardening, and docs updated
+2. Category and repository parity baseline complete
+3. Follow/History/Settings parity complete
+4. LiveRoom behavior parity baseline complete
+5. Release verification unblocked, CI hardened, and docs updated
 
 ---
 
@@ -168,7 +169,51 @@ git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui app-tv/src/test/kotlin/com
 git commit -m "feat(app-tv): add follow/history/settings navigation routes"
 ```
 
-### Task 4: Add repository use-cases for follow/history management
+### Task 4: Wire real category and category-detail data flows early
+
+**Files:**
+- Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/data/LiveRepository.kt`
+- Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/state/MainViewModel.kt`
+- Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/LiveTvApp.kt`
+- Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/navigation/Route.kt`
+- Create: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/category/CategoryDetailScreen.kt`
+- Create: `app-tv/src/test/kotlin/com/yhsrzbg/live_tv/data/CategoryRepositoryTest.kt`
+
+**Step 1: Write failing repository tests for category list/detail lookups**
+
+```kotlin
+@Test
+fun categoryRooms_delegatesToSiteCategoryApi() = runTest { /* assert categoryRooms() result */ }
+```
+
+**Step 2: Run tests and verify fail**
+
+Run: `./gradlew :app-tv:testDebugUnitTest --tests "*CategoryRepositoryTest" --console=plain`
+Expected: FAIL (missing repository methods and route wiring).
+
+**Step 3: Add repository methods and route/screen wiring for category detail**
+
+```kotlin
+suspend fun categoryRooms(siteId: String, categoryId: String, parentId: String, page: Int = 1) =
+    site(siteId).categoryRooms(categoryId, parentId, page)
+```
+
+**Step 4: Re-run tests and compile check**
+
+Run:
+- `./gradlew :app-tv:testDebugUnitTest --tests "*CategoryRepositoryTest" --console=plain`
+- `./gradlew :app-tv:compileDebugKotlin --console=plain`
+
+Expected: PASS.
+
+**Step 5: Commit**
+
+```bash
+git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/data app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui app-tv/src/test/kotlin/com/yhsrzbg/live_tv/data/CategoryRepositoryTest.kt
+git commit -m "feat(app-tv): wire category and category detail data flows"
+```
+
+### Task 5: Add repository use-cases for follow/history management
 
 **Files:**
 - Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/data/LiveRepository.kt`
@@ -208,7 +253,7 @@ git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/data app-tv/src/test/kotlin/c
 git commit -m "feat(app-tv): complete follow and history repository operations"
 ```
 
-### Task 5: Migrate settings schema from minimal to parity subset
+### Task 6: Migrate settings schema from minimal to parity subset
 
 **Files:**
 - Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/data/settings/SettingsStore.kt`
@@ -245,7 +290,7 @@ git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/data/settings app-tv/src/test
 git commit -m "feat(app-tv): extend settings store for tv parity subset"
 ```
 
-### Task 6: Implement Follow screen with focus-safe grid
+### Task 7: Implement Follow screen with focus-safe grid
 
 **Files:**
 - Create: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/follow/FollowScreen.kt`
@@ -282,7 +327,7 @@ git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/follow app-tv/src/
 git commit -m "feat(app-tv): add follow screen and state wiring"
 ```
 
-### Task 7: Implement History screen with clear action
+### Task 8: Implement History screen with clear action
 
 **Files:**
 - Create: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/history/HistoryScreen.kt`
@@ -319,7 +364,7 @@ git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/history app-tv/src
 git commit -m "feat(app-tv): add history screen with clear behavior"
 ```
 
-### Task 8: Implement Settings screen (player/danmaku/follow subset)
+### Task 9: Implement Settings screen (player/danmaku/follow subset)
 
 **Files:**
 - Create: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/settings/SettingsScreen.kt`
@@ -356,7 +401,7 @@ git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/settings app-tv/sr
 git commit -m "feat(app-tv): add settings screen parity subset"
 ```
 
-### Task 9: Complete LiveRoom key-action parity behavior
+### Task 10: Complete LiveRoom key-action parity behavior
 
 **Files:**
 - Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/screen/LiveRoomScreen.kt`
@@ -399,11 +444,10 @@ git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui app-tv/src/test/kotlin/com
 git commit -m "feat(app-tv): wire live room key actions to real navigation and channel switch"
 ```
 
-### Task 10: Add category detail and search anchor routes
+### Task 11: Add search anchor route and data flow
 
 **Files:**
 - Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/navigation/Route.kt`
-- Create: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/category/CategoryDetailScreen.kt`
 - Create: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/feature/search/SearchAnchorScreen.kt`
 - Modify: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/data/LiveRepository.kt`
 - Create: `app-tv/src/test/kotlin/com/yhsrzbg/live_tv/data/SearchAnchorRepositoryTest.kt`
@@ -420,7 +464,7 @@ fun searchAnchors_returnsAnchorItems() = runTest { /* assert mapped list */ }
 Run: `./gradlew :app-tv:testDebugUnitTest --tests "*SearchAnchorRepositoryTest" --console=plain`
 Expected: FAIL.
 
-**Step 3: Implement repository + screens + routes**
+**Step 3: Implement repository + screen + route**
 
 ```kotlin
 suspend fun searchAnchors(siteId: String, keyword: String, page: Int = 1) =
@@ -436,10 +480,10 @@ Expected: PASS.
 
 ```bash
 git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui app-tv/src/main/kotlin/com/yhsrzbg/live_tv/data/LiveRepository.kt app-tv/src/test/kotlin/com/yhsrzbg/live_tv/data/SearchAnchorRepositoryTest.kt
-git commit -m "feat(app-tv): add category detail and search anchor flows"
+git commit -m "feat(app-tv): add search anchor flow"
 ```
 
-### Task 11: Build reusable TV focus components
+### Task 12: Build reusable TV focus components
 
 **Files:**
 - Create: `app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/component/TvActionButton.kt`
@@ -480,7 +524,7 @@ git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/component app-tv/src/main/
 git commit -m "refactor(app-tv): unify tv focus components"
 ```
 
-### Task 12: Add integration-level ViewModel flow tests
+### Task 13: Add integration-level ViewModel flow tests
 
 **Files:**
 - Create: `app-tv/src/test/kotlin/com/yhsrzbg/live_tv/ui/state/MainViewModelMigrationTest.kt`
@@ -515,7 +559,46 @@ git add app-tv/src/main/kotlin/com/yhsrzbg/live_tv/ui/state/MainViewModel.kt app
 git commit -m "test(app-tv): add migration-critical viewmodel behavior tests"
 ```
 
-### Task 13: CI parity and release verification updates
+### Task 14: Fix release minify and local release verification blockers
+
+**Files:**
+- Modify: `app-tv/build.gradle.kts`
+- Modify: `app-tv/proguard-rules.pro`
+- Modify: `docs/phase-status.md`
+- Create or Modify: `app-tv/src/test/kotlin/com/yhsrzbg/live_tv/build/ReleaseConfigSmokeTest.kt`
+
+**Step 1: Reproduce the known release failure**
+
+Run: `./gradlew :app-tv:assembleRelease --console=plain`
+Expected: FAIL at `:app-tv:minifyReleaseWithR8` with the current missing-class error, or PASS if already fixed by prior work.
+
+**Step 2: Document the exact blocker before changing config**
+
+```markdown
+- [ ] R8 missing-class root cause identified
+- [ ] keep rules or dependency fix chosen
+- [ ] local assembleRelease passes after fix
+```
+
+**Step 3: Apply the minimal release fix**
+
+```proguard
+# Keep only the classes actually required by the embedded Rhino path, or exclude the unused path entirely.
+```
+
+**Step 4: Re-run release build**
+
+Run: `./gradlew :app-tv:assembleRelease --console=plain`
+Expected: PASS.
+
+**Step 5: Commit**
+
+```bash
+git add app-tv/build.gradle.kts app-tv/proguard-rules.pro docs/phase-status.md app-tv/src/test/kotlin/com/yhsrzbg/live_tv/build/ReleaseConfigSmokeTest.kt
+git commit -m "fix(app-tv): unblock release minification"
+```
+
+### Task 15: CI parity and release verification updates
 
 **Files:**
 - Modify: `.github/workflows/android-tv-arm64-release.yml`
@@ -538,7 +621,7 @@ Run command target to include core test:
 **Step 3: Verify workflow-equivalent locally**
 
 Run: `./gradlew :core:test :app-tv:lint :app-tv:testDebugUnitTest :app-tv:assembleRelease --console=plain`
-Expected: PASS, or if FAIL, add blocking issue to docs and keep status as In Progress.
+Expected: PASS.
 
 **Step 4: Commit**
 
@@ -547,7 +630,7 @@ git add .github/workflows/android-tv-arm64-release.yml README.md docs/phase-stat
 git commit -m "ci: align workflow checks with migration quality gates"
 ```
 
-### Task 14: Final migration acceptance pass
+### Task 16: Final migration acceptance pass
 
 **Files:**
 - Modify: `docs/phase-status.md`
